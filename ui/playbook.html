@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prova Playbook</title>
+<style>
+:root{
+  --bg:#f5f6f8; --panel:#fff; --line:#e1e4ea; --line2:#eef0f4; --text:#1c2230; --mute:#677086;
+  --acc:#2458c6; --acc-bg:#e8effc; --ok:#1c8a4e; --ok-bg:#e3f4ea; --bad:#c62f2f; --bad-bg:#fbe7e7;
+  --warn:#a86500; --warn-bg:#fff1d6; --grey:#9aa2b2;
+  --font:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans","Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font:14px/1.45 var(--font);background:var(--bg);color:var(--text)}
+button,input,select,textarea{font:inherit;color:inherit}
+header{display:flex;align-items:center;gap:14px;padding:8px 16px;background:var(--panel);border-bottom:1px solid var(--line);height:48px;position:sticky;top:0;z-index:5}
+header .brand{font-weight:700;letter-spacing:.3px;color:var(--acc);font-size:16px}
+header nav{display:flex;gap:4px}
+header nav a{padding:5px 12px;border-radius:6px;color:var(--mute);text-decoration:none;font-weight:600}
+header nav a:hover{background:var(--line2)}
+header nav a.cur{background:var(--acc-bg);color:var(--acc)}
+header .sp{flex:1}
+button{border:1px solid var(--line);background:var(--panel);padding:6px 12px;border-radius:6px;cursor:pointer}
+button:hover:not(:disabled){border-color:var(--acc);color:var(--acc)}
+button.pri{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:600}
+button.pri:hover:not(:disabled){background:#1b47a4;color:#fff}
+button:disabled{opacity:.45;cursor:not-allowed}
+main{max-width:1280px;margin:0 auto;padding:14px 16px 40px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin-bottom:12px}
+.card>h3{margin:0 0 8px;font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--mute)}
+.chip{display:inline-block;padding:1px 8px;border-radius:10px;font-size:11.5px;background:var(--line2);color:var(--mute);white-space:nowrap}
+.chip.ok{background:var(--ok-bg);color:var(--ok)} .chip.bad{background:var(--bad-bg);color:var(--bad)}
+.chip.warn{background:var(--warn-bg);color:var(--warn)} .chip.acc{background:var(--acc-bg);color:var(--acc)}
+.note{background:var(--warn-bg);border:1px solid #f0d9a8;color:#6b4300;padding:8px 12px;border-radius:6px;margin:8px 0;font-size:13px}
+.err{background:var(--bad-bg);border:1px solid #efbcbc;color:var(--bad);padding:8px 12px;border-radius:6px;margin:8px 0;font-size:13px}
+.empty,.mute{color:var(--mute);font-size:13px}
+table{border-collapse:collapse;width:100%}th,td{text-align:left;padding:5px 8px;border-bottom:1px solid var(--line2);vertical-align:top}
+th{font-size:11.5px;text-transform:uppercase;color:var(--mute)}
+.mono{font-family:var(--mono);font-size:12px;word-break:break-word}
+.tr{border:1px solid var(--line);border-radius:6px;padding:6px 8px;margin-top:6px;background:#fafbfc;font-size:12.5px}
+.tr div{padding:1px 0}.tr b{display:inline-block;min-width:62px;color:var(--mute);font-size:11px;text-transform:uppercase}
+[hidden]{display:none!important}
+.tabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
+.tabs button.cur{background:var(--acc-bg);border-color:var(--acc);color:var(--acc);font-weight:600}
+.board{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.col{background:var(--panel);border:1px solid var(--line);border-radius:8px;min-width:0}
+.col>h4{margin:0;padding:8px 10px;border-bottom:1px solid var(--line);font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--mute);display:flex;justify-content:space-between}
+.col .cards{padding:8px;display:grid;gap:8px;max-height:560px;overflow:auto}
+.cd{border:1px solid var(--line);border-radius:7px;padding:7px 9px;background:#fafbfc;cursor:pointer}
+.cd:hover{border-color:var(--acc)}.cd.sel{border-color:var(--acc);background:var(--acc-bg)}
+.cd .t{font-weight:600}.cd .m{font-size:12px;color:var(--mute);margin-top:2px}
+.cd .bar{height:5px;background:var(--line2);border-radius:3px;margin-top:6px;overflow:hidden}.cd .bar i{display:block;height:100%;background:var(--ok)}
+.row2{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:12px}
+#prog{font-size:13px;margin-left:8px}
+svg text{font:11px var(--font);fill:var(--mute)}
+.legend{display:flex;gap:14px;font-size:12px;color:var(--mute);margin-top:4px}.legend i{display:inline-block;width:10px;height:3px;margin-right:5px;vertical-align:middle}
+.log td:first-child{white-space:nowrap;color:var(--mute);font-size:12px}
+@media (max-width:1000px){.board{grid-template-columns:repeat(2,1fr)}.row2{display:block}}
+@media (max-width:560px){.board{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <span class="brand">Prova</span>
+  <nav><a href="/">Dashboard</a><a href="/ui/playbook.html" class="cur">Playbook</a><a href="/ui/lab.html">Sandbox</a><a href="/ui/index.html#s7">Live calls</a><a href="http://127.0.0.1:8799/ui/index.html#s7" target="_blank" rel="noopener" title="Finished showcase run: calls, rehearsals, results">Demo</a></nav>
+  <span class="sp"></span><span class="mute" id="conn"></span>
+</header>
+<main>
+  <div class="tabs" id="tabs"></div>
+  <div class="card" id="runbox">
+    <h3>Learning over time</h3>
+    <button class="pri" id="runbtn">Run 7 simulated days</button>
+    <span id="prog" class="mute">Simulation only: customers, their status and the real clock are not touched. Each run is capped at 1.50 EUR.</span>
+  </div>
+  <div id="msg"></div>
+  <div class="card"><h3>Cards by status</h3><div class="board" id="board"></div></div>
+  <div class="row2">
+    <div class="card"><h3>Win rate per day</h3><div id="chart"></div><div class="legend"><span><i style="background:#2458c6"></i>calls won</span><span><i style="background:#1c8a4e"></i>cards (wins per try)</span></div></div>
+    <div class="card"><h3>Selected card</h3><div id="detail" class="empty">Click a card to see the call that taught it and the calls that used it.</div></div>
+  </div>
+  <div class="card"><h3>Change log</h3><div id="log"></div></div>
+</main>
+<script>
+"use strict";
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const api = async (p, o) => { const r = await fetch(p, o); let j = null; try { j = await r.json(); } catch (e) {} if (!r.ok) throw new Error((j && (j.error || j.detail)) || r.status); return j; };
+const ST = ["candidate", "proven", "retired", "rejected"];
+const S = {goal: null, goals: [], card: null, job: null};
+
+async function init() {
+  try { const g = await api("/api/goals"); S.goals = g.active.length ? g.active : (g.default ? [g.default] : []); }
+  catch (e) { $("#msg").innerHTML = `<div class="err">${esc(e.message)}</div>`; }
+  S.goal = new URLSearchParams(location.hash.slice(1)).get("goal") || S.goals[0] || null;
+  tabs(); await load(); stream();
+}
+function tabs() {
+  $("#tabs").innerHTML = S.goals.map(g => `<button data-g="${esc(g)}" class="${g === S.goal ? "cur" : ""}">${esc(g)}</button>`).join("") +
+    (S.goals.length ? "" : '<span class="empty">No goal chosen yet. Choose goals in Setup (chat: "goals").</span>');
+  document.querySelectorAll("#tabs button").forEach(b => b.onclick = () => { S.goal = b.dataset.g; S.card = null; location.hash = "goal=" + S.goal; tabs(); load(); });
+}
+function origin(c) { return c.origin === "learned" ? `learned from call ${c.call_id ?? "?"}` : c.origin === "online" ? "seed" : c.origin; }
+function board(v) {
+  $("#board").innerHTML = ST.map(s => `<div class="col"><h4><span>${s}</span><span>${(v.cards[s] || []).length}</span></h4><div class="cards">${
+    (v.cards[s] || []).map(c => { const wr = c.tries ? Math.round(100 * c.wins / c.tries) : 0;
+      return `<div class="cd ${S.card === c.id ? "sel" : ""}" data-id="${c.id}"><div class="t">${esc(c.title)}</div>
+      <div class="m">${esc(c.situation)} · ${esc(origin(c))}${c.goal ? "" : " · any goal"}</div>
+      <div class="m">${c.tries} tries · ${c.wins} wins${c.tries ? " · " + wr + "%" : ""}</div>
+      ${c.tries ? `<div class="bar"><i style="width:${wr}%"></i></div>` : ""}
+      ${s === "rejected" ? `<div class="m" style="color:var(--bad)">${esc(((c.lint || {}).reasons || []).join("; ") || "rejected")}</div>` : ""}</div>`; }).join("") || '<div class="empty">none</div>'}</div></div>`).join("");
+  document.querySelectorAll(".cd").forEach(el => el.onclick = () => pick(+el.dataset.id));
+}
+function chart(days) {
+  const W = 560, H = 190, L = 34, B = 24, T = 10, R = 10;
+  if (!days.length) { $("#chart").innerHTML = '<div class="empty">No daily snapshots yet. Run the simulated days.</div>'; return; }
+  const x = i => L + (days.length === 1 ? (W - L - R) / 2 : i * (W - L - R) / (days.length - 1));
+  const y = v => T + (1 - v) * (H - T - B);
+  const line = (key, col) => { const pts = days.map((d, i) => d[key] == null ? null : [x(i), y(d[key])]);
+    const path = pts.map((p, i) => p ? (i && pts[i - 1] ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1) : "").join(" ");
+    return `<path d="${path}" fill="none" stroke="${col}" stroke-width="2"/>` + pts.filter(Boolean).map(p => `<circle cx="${p[0]}" cy="${p[1]}" r="3" fill="${col}"/>`).join(""); };
+  const grid = [0, .25, .5, .75, 1].map(v => `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="#e1e4ea"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end">${Math.round(v * 100)}%</text>`).join("");
+  const xs = days.map((d, i) => `<text x="${x(i)}" y="${H - 6}" text-anchor="middle">${esc(d.day.slice(5))}</text>`).join("");
+  $("#chart").innerHTML = `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="win rate per day">${grid}${xs}${line("card_win_rate", "#1c8a4e")}${line("win_rate", "#2458c6")}</svg>
+    <table style="margin-top:6px"><tr><th>day</th><th>calls</th><th>won</th><th>proven</th><th>candidate</th><th>retired</th><th>rejected</th></tr>${days.map(d =>
+    `<tr><td>${esc(d.day)}</td><td>${d.calls}</td><td>${d.won}</td><td>${d.cards.proven}</td><td>${d.cards.candidate}</td><td>${d.cards.retired}</td><td>${d.cards.rejected}</td></tr>`).join("")}</table>`;
+}
+function log(ch) {
+  $("#log").innerHTML = ch.length ? `<table class="log"><tr><th>when</th><th>card</th><th>event</th><th>why</th></tr>${ch.slice().reverse().map(c =>
+    `<tr><td>${esc(c.t.replace("T", " "))}</td><td>${esc(c.title)}</td><td><span class="chip ${c.kind === "promoted" ? "ok" : c.kind === "retired" || c.kind === "rejected" ? "bad" : "acc"}">${esc(c.kind)}${c.from ? " (" + esc(c.from) + " to " + esc(c.status) + ")" : ""}</span></td>
+    <td>${esc(c.reason || "")}${c.call_id ? ` · call ${c.call_id}` : ""}</td></tr>`).join("")}</table>` : '<div class="empty">No changes yet.</div>';
+}
+async function load() {
+  const q = S.goal ? "?goal=" + encodeURIComponent(S.goal) : "";
+  try {
+    const [v, h] = await Promise.all([api("/api/playbook/view" + q), api("/api/playbook/history" + q)]);
+    board(v); chart(h.days); log(h.changes);
+  } catch (e) { $("#msg").innerHTML = `<div class="err">${esc(e.message)}</div>`; }
+}
+function turns(ts) { return `<div class="tr">${(ts || []).map(t => `<div><b>${esc(t.role)}</b>${esc(t.text)}</div>`).join("") || '<span class="empty">no transcript</span>'}</div>`; }
+async function pick(id) {
+  S.card = id; document.querySelectorAll(".cd").forEach(el => el.classList.toggle("sel", +el.dataset.id === id));
+  try {
+    const d = await api("/api/playbook/cards/" + id), c = d.card;
+    $("#detail").innerHTML = `<div><b>${esc(c.title)}</b> <span class="chip">${esc(c.status)}</span></div><p>${esc(c.move)}</p><p class="mono">${esc(c.example)}</p>
+      <div class="mute">${c.tries} tries · ${c.wins} wins · source: ${esc(c.source)}</div>
+      <h3 style="margin:12px 0 4px;font-size:12px;color:var(--mute);text-transform:uppercase">Taught by</h3>${d.taught_by ?
+      `<div class="mute">call ${d.taught_by.call_id} · ${esc(d.taught_by.outcome)} · ${esc(d.taught_by.summary || "")}</div>${turns(d.taught_by.turns)}` : '<div class="empty">A seed card: it was written from model knowledge and the company documents, not from a call.</div>'}
+      <h3 style="margin:12px 0 4px;font-size:12px;color:var(--mute);text-transform:uppercase">Used in ${d.used_in.length} calls</h3>${d.used_in.map(u =>
+      `<div><a href="/ui/lab.html#call${u.id}">call ${u.id}</a> · ${esc(u.purpose)} · ${esc(u.mode)} · ${esc(u.outcome || "")}</div>`).join("") || '<div class="empty">not used yet</div>'}`;
+  } catch (e) { $("#detail").innerHTML = `<div class="err">${esc(e.message)}</div>`; }
+}
+$("#runbtn").onclick = async () => {
+  $("#runbtn").disabled = true; $("#prog").textContent = "starting...";
+  try {
+    const s = await api("/api/lab/simulate", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({days: 7, calls_per_day: 4, goals: S.goals, cap_eur: 1.5})});
+    if (!s.started) throw new Error(s.error || "not started");
+    S.job = s.job; poll();
+  } catch (e) { $("#prog").textContent = e.message; $("#runbtn").disabled = false; }
+};
+async function poll() {
+  if (!S.job) return;
+  try {
+    const j = await api("/api/jobs/" + S.job);
+    if (j.status === "running") { setTimeout(poll, 1500); return; }
+    $("#runbtn").disabled = false; S.job = null;
+    if (j.status === "done") { const r = j.result || {}; $("#prog").textContent = `done: ${r.days ? r.days.length : 0} day-goal rows, ${(r.cost_eur ?? 0).toFixed(2)} EUR, stopped by ${r.stopped_by}${r.fake ? " (FAKE mode)" : ""}`; }
+    else $("#prog").textContent = "error: " + (j.error || "");
+    load();
+  } catch (e) { setTimeout(poll, 3000); }
+}
+function stream() {
+  if (!window.EventSource) return;
+  const es = new EventSource("/api/events/stream");
+  let t = null;
+  es.addEventListener("event", ev => {
+    const e = JSON.parse(ev.data), p = typeof e.payload === "string" ? JSON.parse(e.payload || "{}") : (e.payload || {});
+    if (e.type === "setup" && p.step === "lab_day" && S.job) { const d = p.detail || {}; $("#prog").textContent = `day ${d.day}/${d.of}${d.goal ? " · " + d.goal + " · " + d.calls + " calls, " + d.won + " won" : ""}`; }
+    if (e.type === "card" || e.type === "review") { clearTimeout(t); t = setTimeout(load, 700); }
+  });
+  es.onopen = () => $("#conn").textContent = "live"; es.onerror = () => $("#conn").textContent = "reconnecting";
+}
+init();
+</script>
+</body>
+</html>

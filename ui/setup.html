@@ -1,0 +1,667 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prova Setup</title>
+<style>
+:root{
+  --bg:#f5f6f8; --panel:#fff; --line:#e1e4ea; --line2:#eef0f4; --text:#1c2230; --mute:#677086;
+  --acc:#2458c6; --acc-bg:#e8effc; --ok:#1c8a4e; --ok-bg:#e3f4ea; --bad:#c62f2f; --bad-bg:#fbe7e7;
+  --warn:#a86500; --warn-bg:#fff1d6; --grey:#9aa2b2;
+  --font:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans","Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font:14px/1.45 var(--font);background:var(--bg);color:var(--text);display:flex;flex-direction:column}
+button,input,select,textarea{font:inherit;color:inherit}
+header{display:flex;align-items:center;gap:14px;padding:8px 16px;background:var(--panel);border-bottom:1px solid var(--line);height:48px;flex:none}
+header .brand{font-weight:700;letter-spacing:.3px;color:var(--acc);font-size:16px}
+header nav{display:flex;gap:4px}
+header nav a{padding:5px 12px;border-radius:6px;color:var(--mute);text-decoration:none;font-weight:600}
+header nav a:hover{background:var(--line2)}
+header nav a.cur{background:var(--acc-bg);color:var(--acc)}
+header .sp{flex:1}
+header .stat{color:var(--mute);font-size:13px}
+button{border:1px solid var(--line);background:var(--panel);padding:6px 12px;border-radius:6px;cursor:pointer}
+button:hover:not(:disabled){border-color:var(--acc);color:var(--acc)}
+button.pri{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:600}
+button.pri:hover:not(:disabled){background:#1b47a4;color:#fff}
+button.sm{padding:2px 8px;font-size:12px}
+button:disabled{opacity:.45;cursor:not-allowed}
+input[type=text],input[type=url],input:not([type]),textarea{border:1px solid var(--line);border-radius:6px;padding:6px 8px;background:#fff;min-width:0}
+input:focus,textarea:focus{outline:2px solid var(--acc-bg);border-color:var(--acc)}
+#wired{display:none;background:var(--warn-bg);border-bottom:1px solid #f0d9a8;color:#6b4300;padding:6px 16px;font-size:13px;flex:none}
+#grid{flex:1;min-height:0;display:grid;grid-template-columns:minmax(300px,380px) minmax(0,1fr) minmax(260px,340px);gap:12px;padding:12px}
+.pane{background:var(--panel);border:1px solid var(--line);border-radius:8px;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.pane>h4{margin:0;padding:9px 12px;border-bottom:1px solid var(--line);font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--mute);display:flex;gap:8px;align-items:center}
+.pane>h4 .sp{flex:1}
+.pane .body{padding:10px 12px;overflow:auto;flex:1}
+/* chat */
+#msgs{display:flex;flex-direction:column;gap:8px}
+.m{max-width:92%;padding:8px 11px;border-radius:12px;border:1px solid var(--line);background:#fafbfc;white-space:pre-wrap;word-wrap:break-word}
+.m.me{align-self:flex-end;background:var(--acc-bg);border-color:#cddbf6}
+.m.sys{align-self:center;font-size:12px;color:var(--mute);background:none;border:0}
+.q{align-self:stretch;max-width:100%;background:#fff;border:1px solid var(--acc);border-radius:10px;padding:10px 12px}
+.q.done{border-color:var(--line);opacity:.65}
+.q .t{font-weight:600}
+.q .why{font-size:12.5px;color:var(--mute);margin:4px 0}
+.q .impact{font-size:12px;color:var(--warn)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 4px}
+.chips button{border-radius:999px;border-color:var(--acc);color:var(--acc);background:#fff}
+.chips button:hover{background:var(--acc-bg)}
+.q .free{display:flex;gap:6px;margin-top:6px}.q .free input{flex:1}
+.q .skip{font-size:12px;color:var(--mute)}
+#compose{border-top:1px solid var(--line);padding:8px;display:flex;flex-direction:column;gap:6px}
+#compose .row{display:flex;gap:6px}#compose input{flex:1}
+#drop{border:1.5px dashed var(--line);border-radius:8px;padding:8px;text-align:center;color:var(--mute);font-size:12.5px;cursor:pointer}
+#drop.over{border-color:var(--acc);background:var(--acc-bg);color:var(--acc)}
+#startform{display:grid;gap:6px}
+#startform label{font-size:12px;color:var(--mute)}
+/* case file */
+.sum{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.sum .big{font-size:20px;font-weight:700}
+.chip{display:inline-block;padding:1px 8px;border-radius:10px;font-size:11.5px;background:var(--line2);color:var(--mute);white-space:nowrap}
+.chip.ok{background:var(--ok-bg);color:var(--ok)} .chip.bad{background:var(--bad-bg);color:var(--bad)}
+.chip.warn{background:var(--warn-bg);color:var(--warn)} .chip.acc{background:var(--acc-bg);color:var(--acc)}
+.lanes{display:flex;height:34px;border-radius:7px;overflow:hidden;border:1px solid var(--line);margin-bottom:4px}
+.lanes div{display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#fff;min-width:0;overflow:hidden;white-space:nowrap}
+.l-ai_call{background:#1c8a4e}.l-consent_request{background:#2458c6}.l-human_call{background:#a86500}.l-hold{background:#8a92a3}
+.lanekey{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--mute);margin-bottom:12px}
+.lanekey i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px}
+h5{margin:14px 0 6px;font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--mute)}
+.fact{display:grid;grid-template-columns:170px 1fr auto;gap:10px;padding:6px 0;border-bottom:1px solid var(--line2);align-items:start;position:relative}
+.fact .k{font-weight:600;font-size:13px}.fact .k small{display:block;font-family:var(--mono);font-weight:400;color:var(--mute);font-size:11px}
+.fact .v{word-break:break-word}
+.fact .quote{display:none;position:absolute;left:170px;right:0;top:100%;z-index:5;background:#1c2230;color:#fff;padding:8px 10px;border-radius:6px;font-size:12.5px;font-style:italic;box-shadow:0 6px 18px rgba(0,0,0,.2)}
+.fact .quote b{font-style:normal;color:#9db8f0;display:block;font-size:11px}
+.fact:hover .quote{display:block}
+.fact.noq .quote{display:none!important}
+.b-verified{background:#dff3e8;color:#0f6a39}.b-sourced{background:var(--acc-bg);color:var(--acc)}
+.b-attested{background:#efe4fb;color:#6a32a8}.b-assumed{background:var(--warn-bg);color:var(--warn)}
+.cert{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.cert>div{border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+.rules{display:grid;gap:6px}
+.rule{position:relative;border:1px solid var(--line);border-left:4px solid var(--acc);border-radius:6px;padding:7px 10px;background:#fafbfc;cursor:help;outline:none}
+.rule:hover,.rule:focus{border-color:var(--acc);background:var(--acc-bg)}
+.rule .rt{font-weight:600}.rule .rs{font-size:11px;color:var(--mute);font-family:var(--mono)}
+.rule .rq{display:none;margin-top:6px;padding:7px 9px;background:#1c2230;color:#fff;border-radius:6px;font-size:12.5px;font-style:italic;word-break:break-word}
+.rule .rq b{font-style:normal;color:#9db8f0;display:block;font-size:11px}
+.rule:hover .rq,.rule:focus .rq{display:block}
+.fid{font-size:13px;margin:6px 0}
+.offer{display:block;font-size:12.5px;line-height:1.35}
+.cert .v{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums}.cert .l{font-size:12px;color:var(--mute)}
+.cert .good{border-color:#b9e0c9;background:#f4fbf7}.cert .badc{border-color:#efbcbc;background:#fdf3f3}
+.ocr{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:8px;margin-bottom:6px}
+.ocr canvas,.ocr img{max-width:220px;max-height:60px;border:1px solid var(--line);border-radius:4px;background:#f0f0f0}
+.ocr .noimg{width:140px;height:44px;background:var(--line2);border-radius:4px;color:var(--mute);font-size:11px;display:grid;place-items:center}
+.ocr .meta{font-size:12px;color:var(--mute)}.ocr input{width:150px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 4px;align-items:center}
+.note{background:var(--warn-bg);border:1px solid #f0d9a8;color:#6b4300;padding:8px 12px;border-radius:6px;margin:8px 0;font-size:13px}
+.err{background:var(--bad-bg);border:1px solid #efbcbc;color:var(--bad);padding:8px 12px;border-radius:6px;margin:8px 0;font-size:13px}
+.okbox{background:var(--ok-bg);border:1px solid #b9e0c9;color:var(--ok);padding:8px 12px;border-radius:6px;margin:8px 0;font-size:13px}
+.empty{color:var(--mute);font-size:13px;padding:8px 0}
+/* drawer */
+#drawer{position:fixed;top:48px;right:0;bottom:0;width:min(520px,100%);background:#fff;border-left:1px solid var(--line);box-shadow:-8px 0 24px rgba(0,0,0,.12);transform:translateX(105%);transition:transform .2s;z-index:20;display:flex;flex-direction:column}
+#drawer.open{transform:none}
+#drawer h4{margin:0;padding:12px 14px;border-bottom:1px solid var(--line);display:flex}
+#drawer .body{padding:12px 14px;overflow:auto;flex:1}
+#drawer .item{border-bottom:1px solid var(--line2);padding:8px 0}
+#drawer .item .q2{font-size:12px;color:var(--mute);font-style:italic;margin-top:3px}
+/* monitor */
+.mon{border-left:4px solid var(--grey);padding:6px 9px;margin-bottom:6px;background:#fafbfc;border-radius:0 6px 6px 0;font-size:13px}
+.mon.allow{border-color:var(--ok)}.mon.deny{border-color:var(--bad);background:var(--bad-bg)}.mon.escalate{border-color:#e49a1a;background:var(--warn-bg)}
+.mon .top{display:flex;gap:8px;align-items:center}.mon .tool{font-family:var(--mono);font-weight:600}
+.mon .dec{font-size:11px;font-weight:700;text-transform:uppercase;padding:0 6px;border-radius:8px;color:#fff}
+.mon.allow .dec{background:var(--ok)}.mon.deny .dec{background:var(--bad)}.mon.escalate .dec{background:#d98a00}
+.mon .sub{font-size:12px;color:var(--mute);font-family:var(--mono);word-break:break-word}
+.monstat{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+#radar table{border-collapse:collapse;width:100%}#radar th,#radar td{text-align:left;padding:5px 8px;border-bottom:1px solid var(--line2)}
+#radar th{font-size:11.5px;text-transform:uppercase;color:var(--mute)}
+[hidden]{display:none!important}
+@media (max-width:1100px){body{display:block;height:auto}#grid{display:block}.pane{margin-bottom:12px;max-height:80vh}}
+</style>
+</head>
+<body>
+<header>
+  <span class="brand">Prova</span>
+  <nav id="nav"><a href="/">Dashboard</a><a href="/ui/playbook.html">Playbook</a><a href="/ui/lab.html">Sandbox</a><a href="/ui/index.html#s7">Live calls</a><a href="http://127.0.0.1:8799/ui/index.html#s7" target="_blank" rel="noopener" title="Finished showcase run: calls, rehearsals, results">Demo</a></nav>
+  <span class="sp"></span>
+  <span class="stat" id="conn"></span>
+</header>
+<div id="wired"></div>
+
+<div id="grid">
+  <section class="pane" id="chatpane">
+    <h4>Setup chat</h4>
+    <div class="body"><div id="msgs"></div></div>
+    <div id="compose">
+      <div id="drop">Drop xlsx, csv, pdf, jpg or png here, or click to choose<input type="file" id="file" hidden multiple accept=".xlsx,.xls,.csv,.pdf,.jpg,.jpeg,.png,.webp,.md,.txt"></div>
+      <div class="row"><input id="msgin" placeholder="Type to the setup agent, or paste a URL"><button class="pri" id="send">Send</button></div>
+    </div>
+  </section>
+
+  <section class="pane" id="casepane">
+    <h4><span id="casetitle">Case File</span><span class="sp"></span>
+      <button class="sm" id="b-radar">Radar</button><button class="sm" id="b-refresh">Refresh</button></h4>
+    <div class="body" id="casebody"></div>
+  </section>
+
+  <section class="pane" id="monpane">
+    <h4>Agent Monitor<span class="sp"></span><span class="chip" id="monphase"></span></h4>
+    <div class="body">
+      <div class="monstat" id="monstat"></div>
+      <div id="monlist"><div class="empty">No agent actions yet.</div></div>
+    </div>
+  </section>
+</div>
+
+<aside id="drawer"><h4><span>Compliance Brief</span><span style="flex:1"></span><button class="sm" id="b-close">Close</button></h4><div class="body" id="drawerbody"></div></aside>
+
+<script>
+"use strict";
+const $ = (s, r) => (r || document).querySelector(s);
+const esc = v => String(v == null ? "" : v).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const pj = v => { if (typeof v === "string") { try { return JSON.parse(v); } catch (e) { return v; } } return v; };
+const arr = v => Array.isArray(v) ? v : (v && typeof v === "object" ? Object.values(v) : []);
+const short = (s, n) => { s = String(s == null ? "" : s); return s.length > n ? s.slice(0, n - 1) + "…" : s; };
+const timers = {};
+function later(k, fn, ms) { clearTimeout(timers[k]); timers[k] = setTimeout(fn, ms || 300); }
+
+/* ---- api: never throws; 404 on a setup2 route = "not wired yet" */
+const unwired = new Set();
+async function api(method, path, body, form) {
+  try {
+    const o = { method, headers: {} };
+    if (body !== undefined) { if (form) o.body = body; else { o.headers["Content-Type"] = "application/json"; o.body = JSON.stringify(body); } }
+    const r = await fetch(path, o), txt = await r.text();
+    let d = null; try { d = txt ? JSON.parse(txt) : null; } catch (e) { d = { raw: txt }; }
+    if (r.status === 404 || r.status === 405) { unwired.add(method + " " + path.split("?")[0]); showWired(); return { ok: false, status: r.status, data: d, error: "not wired yet", unwired: true }; }
+    unwired.delete(method + " " + path.split("?")[0]); showWired();
+    let err = null;
+    if (!r.ok) err = (d && (d.error || (typeof d.detail === "string" ? d.detail : d.detail && (d.detail.error || JSON.stringify(d.detail))))) || (r.status + " " + r.statusText);
+    else if (d && d.error && typeof d.error === "string") err = d.error;
+    return { ok: !err, status: r.status, data: d, error: err };
+  } catch (e) { return { ok: false, status: 0, data: null, error: "Network error: " + e }; }
+}
+function showWired() {
+  const el = $("#wired");
+  el.style.display = unwired.size ? "block" : "none";
+  el.textContent = "Not wired yet (backend route missing): " + [...unwired].join(", ");
+}
+
+/* ---- state */
+const S = { showTest: false, case: null, questions: [], review: null, lanes: null, monitor: [], phase: "", denied: 0, answered: {}, chat: [], lastId: 0, busy: false, turnon: null, view: "setup", radar: null, sessionStarted: false };
+
+/* ---- chat */
+function say(text, cls) { S.chat.push({ text, cls: cls || "" }); renderChat(); }
+function typing(host) { const a = document.activeElement; return a && a.tagName === "INPUT" && host.contains(a) && a.value && a.id !== "s-co"; }
+function renderChat() {
+  const box = $("#msgs"); let h = "";
+  if (typing(box)) return;
+  if (!S.case && !S.sessionStarted) {
+    h += `<div class="q"><div class="t">Start a setup</div><div id="startform">
+      <label>Company</label><input id="s-co" value="Ασφάλειες Παπαδάκης">
+      <label>Website</label><input id="s-web" value="https://papadakis-asfalies.example">
+      <label>What the business does (optional)</label><input id="s-desc" placeholder="Insurance office, renewals">
+      <button class="pri" id="s-go">Start</button></div></div>`;
+  }
+  if (S.case && !S.chat.length && !S.questions.length) {
+    const c = S.case, ph = c.phase ? String(c.phase).replace(/_/g, " ").toLowerCase() : "";
+    h += `<div class="m sys">Setup for ${esc(c.company || "")}${ph ? " · " + esc(ph) : ""}${c.live ? " · calling is live" : ""}</div>`;
+    h += `<div class="m">${esc(c.summary || "Case file loaded.")}. No open questions: the rules, lanes and certification are in the case file.</div>`;
+  }
+  for (const m of S.chat) h +=`<div class="m ${m.cls}">${esc(m.text)}</div>`;
+  for (const q of S.questions) h += qHtml(q);
+  box.innerHTML = h;
+  const b = box.parentElement; b.scrollTop = b.scrollHeight;
+  const go = $("#s-go"); if (go) go.onclick = startSession;
+}
+function qHtml(q) {
+  const opts = arr(q.options).map(o => `<button data-q="${esc(q.id)}" data-o="${esc(o.id)}">${esc(o.label || o.id)}</button>`).join("");
+  const d = q.default_if_skipped || {};
+  const imp = q.impact ? `${q.impact.customers != null ? q.impact.customers + " customers" : ""}${q.impact.eur != null ? " · EUR " + q.impact.eur : ""}` : "";
+  return `<div class="q" data-qid="${esc(q.id)}">
+    <div class="t">${esc(q.text)}</div>
+    ${q.why ? `<div class="why">${esc(q.why)}${q.law_ref ? ` <span class="chip">${esc(q.law_ref)}</span>` : ""}</div>` : ""}
+    ${imp ? `<div class="impact">At stake: ${esc(imp)}</div>` : ""}
+    <div class="chips">${opts}</div>
+    ${q.free_text !== false ? `<div class="free"><input data-qin="${esc(q.id)}" placeholder="or type an answer"><button class="sm" data-qs="${esc(q.id)}">Answer</button></div>` : ""}
+    <div class="skip">${d.effect ? "If skipped: " + esc(d.effect) + " " : ""}<button class="sm" data-skip="${esc(q.id)}">Skip</button></div>
+  </div>`;
+}
+$("#msgs").addEventListener("click", async e => {
+  const t = e.target.closest("button"); if (!t) return;
+  if (t.dataset.o) return answerQ(t.dataset.q, t.dataset.o, t.textContent);
+  if (t.dataset.qs) { const i = $(`input[data-qin="${CSS.escape(t.dataset.qs)}"]`); if (i && i.value.trim()) return answerQ(t.dataset.qs, i.value.trim(), i.value.trim()); }
+  if (t.dataset.skip) { say("Skipped.", "me"); const r = await api("POST", "/api/setup2/skip", { qid: t.dataset.skip }); handleReply(r); }
+});
+$("#msgs").addEventListener("keydown", e => {
+  if (e.key === "Enter" && e.target.dataset.qin) { const v = e.target.value.trim(); if (v) answerQ(e.target.dataset.qin, v, v); }
+});
+async function answerQ(qid, answer, label) {
+  say(label, "me");
+  const r = await api("POST", "/api/setup2/answer", { qid, answer, by: "owner" });
+  handleReply(r);
+}
+async function pollJob(id) {
+  for (let i = 0; i < 400; i++) {
+    await new Promise(res => setTimeout(res, 1000));
+    const j = await api("GET", "/api/jobs/" + id);
+    if (!j.ok) return;
+    if (j.data.status === "running") continue;
+    const res = j.data.result || {};
+    if (j.data.status === "error") say("Failed: " + j.data.error, "sys");
+    else if (res.error) say(res.error, "sys");
+    else if (res.certified != null) say(res.certified ? "Certified. " + ((res.setup_attacks || {}).line || "") : "Certification did not pass. " + ((res.setup_attacks || {}).line || ""), "sys");
+    return loadAll();
+  }
+}
+function handleReply(r) {
+  if (r.unwired) say("Not wired yet: the server has no route for this action.", "sys");
+  else if (!r.ok) say("Error: " + r.error, "sys");
+  else if (r.data && (r.data.reply || r.data.message)) say(r.data.reply || r.data.message);
+  if (r.ok && r.data && r.data.started && r.data.job) { say("Working ...", "sys"); pollJob(r.data.job); }
+  if (r.ok && r.data) {
+    const d0 = r.data.result && typeof r.data.result === "object" ? Object.assign({}, r.data.result, r.data) : r.data;
+    if (d0.case_file || d0.case || d0.inferred) S.case = d0.case_file || d0.case || d0.inferred;
+    if (Array.isArray(d0.questions)) S.questions = d0.questions;
+    if (d0.lanes) S.lanes = d0.lanes;
+  }
+  renderChat(); renderCase(); loadAll();
+}
+async function startSession() {
+  const company = $("#s-co").value.trim(), website = $("#s-web").value.trim(), description = $("#s-desc").value.trim();
+  if (!company) return;
+  say("Starting setup for " + company + (website ? " (" + website + ")" : "") + " ...", "sys");
+  S.sessionStarted = true;
+  const r = await api("POST", "/api/setup2/start", { company, website: website || null, description, face: "chat" });
+  if (!r.ok) S.sessionStarted = false;
+  handleReply(r);
+}
+$("#send").onclick = sendMsg;
+$("#msgin").addEventListener("keydown", e => { if (e.key === "Enter") sendMsg(); });
+async function sendMsg() {
+  const v = $("#msgin").value.trim(); if (!v) return; $("#msgin").value = "";
+  say(v, "me");
+  if (/^https?:\/\//i.test(v)) return handleReply(await api("POST", "/api/setup2/add", { url: v }));
+  handleReply(await api("POST", "/api/setup2/chat", { message: v }));
+}
+/* files: multipart `file` to POST /api/setup2/add (backend saves it, then calls add(path=...)) */
+const drop = $("#drop"), fin = $("#file");
+drop.onclick = () => fin.click();
+fin.onchange = () => upload([...fin.files]);
+["dragenter", "dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("over"); }));
+["dragleave", "drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("over"); }));
+drop.addEventListener("drop", e => upload([...e.dataTransfer.files]));
+async function upload(files) {
+  for (const f of files) {
+    say("Uploading " + f.name + " ...", "me");
+    const fd = new FormData(); fd.append("file", f, f.name);
+    handleReply(await api("POST", "/api/setup2/add", fd, true));
+  }
+  fin.value = "";
+}
+
+/* ---- case file */
+const PROV = { verified: "b-verified", sourced: "b-sourced", attested: "b-attested", assumed: "b-assumed", missing: "" };
+function provOf(f) {
+  let p = (f.provenance || f.prov || "").toString().toLowerCase();
+  if (!p) {
+    const st = (f.status || "").toLowerCase(), src = (f.source || "").toLowerCase();
+    if (st === "confirmed" || src.startsWith("attested")) p = "attested";
+    else if (st === "assumed" || src.startsWith("assumed") || st === "default") p = "assumed";
+    else if (st === "verified") p = "verified";
+    else p = f.quote ? "sourced" : "assumed";
+  }
+  if (p === "missing" || p === "default" || p === "empty") return "missing";
+  return PROV[p] ? p : (p.startsWith("attest") ? "attested" : p.startsWith("assum") ? "assumed" : p.startsWith("verif") ? "verified" : "sourced");
+}
+function factList(c) {
+  const raw = c.facts || c.slots || [];
+  if (Array.isArray(raw)) return raw;
+  return Object.entries(raw).map(([k, v]) => {
+    if (!(v && typeof v === "object" && !Array.isArray(v) && ("value" in v || "quote" in v || "source" in v || "provenance" in v))) return { key: k, value: v };
+    const f = Object.assign({ key: k }, v);
+    f.hint = v.label; f.label = humanKey(k);   // the API label is a long description: keep it as a tooltip
+    if (!f.quote && v.source) { const s = splitSource(v.source); if (s.quote) { f.quote = s.quote; f.source_ref = s.where; } else f.source_ref = s.where; }
+    return f;
+  });
+}
+const humanKey = k => { const s = String(k || "").replace(/_/g, " "); return s.charAt(0).toUpperCase() + s.slice(1); };
+/* source strings look like: <where>: "<quote>" */
+function splitSource(src) {
+  const m = /^(.*?):\s*"([\s\S]*)"\s*$/.exec(String(src || ""));
+  return m ? { where: m[1], quote: m[2] } : { where: String(src || ""), quote: "" };
+}
+function fmtVal(v) {
+  if (v == null || v === "") return '<span class="chip">empty</span>';
+  if (Array.isArray(v) && v.length === 0) return '<span class="chip">none</span>';
+  if (Array.isArray(v) && v.every(x => typeof x === "string")) return esc(short(v.join(" · "), 220));
+  if (Array.isArray(v) && v.every(x => x && typeof x === "object" && x.name)) return v.slice(0, 8).map(x => `<span class="offer">${esc(x.name)}${x.price != null ? " · " + esc(x.price) + " €" + (x.period ? "/" + esc(x.period) : "") : ""}</span>`).join("");
+  if (typeof v === "boolean") return esc(String(v));
+  if (typeof v === "object") return `<span style="font-family:var(--mono);font-size:12px">${esc(short(JSON.stringify(v), 160))}</span>`;
+  return esc(short(v, 200));
+}
+function ratio(v) {
+  if (v == null) return null;
+  if (typeof v === "string" || typeof v === "number") return String(v);
+  const p = v.passed ?? v.p ?? v.caught ?? v.blocked ?? v.ok, n = v.total ?? v.n ?? v.of ?? v.count;
+  if (p != null && n != null) return p + "/" + n;
+  if (v.summary) return String(v.summary);
+  return null;
+}
+function laneCounts(L) {
+  if (!L) return null;
+  const src = L.counts || L.lanes || L.summary || L, eurs = L.eur && typeof L.eur === "object" ? L.eur : {};
+  const out = {};
+  for (const k of ["ai_call", "consent_request", "human_call", "hold"]) {
+    const v = src[k]; if (v == null) continue;
+    out[k] = typeof v === "object" ? { n: v.count ?? v.n ?? v.customers ?? 0, eur: v.eur ?? v.value_eur } : { n: Number(v), eur: eurs[k] };
+  }
+  return Object.keys(out).length ? out : null;
+}
+const LANE_NAME = { ai_call: "AI call", consent_request: "Consent request", human_call: "Human call", hold: "Hold" };
+function lanesHtml() {
+  const c = laneCounts(S.lanes) || laneCounts(S.case && (S.case.lanes || S.case.lanes_summary));
+  if (!c) return `<div class="empty">Lanes appear after the customer file is read.</div>`;
+  const total = Object.values(c).reduce((a, x) => a + x.n, 0) || 1;
+  let bar = "", key = "";
+  for (const k of Object.keys(LANE_NAME)) if (c[k]) {
+    bar += `<div class="l-${k}" style="flex:${Math.max(c[k].n, .3)}" title="${LANE_NAME[k]}">${c[k].n}</div>`;
+    key += `<span><i class="l-${k}"></i>${LANE_NAME[k]} ${c[k].n}${c[k].eur != null ? " · EUR " + Math.round(c[k].eur) : ""}</span>`;
+  }
+  return `<div class="lanes">${bar}</div><div class="lanekey">${key}<span>${total} customers</span></div>`;
+}
+function certHtml() {
+  const R = S.review || {}, C = R.certification || R.cert || (S.case && S.case.certification) || null;
+  if (!C) return `<div class="empty">Not certified yet. Press Build when the questions are answered.</div>`;
+  let sa = C.setup_attacks ?? C.setup_attack_tests;
+  const line = C.setup_attacks_line || (S.review && S.review.setup_attacks_line) || "";
+  const lm = /(\d+)\s*\/\s*(\d+)/.exec(line);
+  if (lm) sa = lm[1] + "/" + lm[2];
+  const gfb = C.guard_false_block_rate ?? C.false_block_rate ?? (C.guard && (C.guard.false_block_rate ?? C.guard.false_block));
+  const cells = [
+    ["Attacks resisted", C.attacks], ["Generated attacks", C.generated], ["Setup attacks blocked", sa],
+    ["Mutants caught", C.mutants], ["Rule checks", C.checks], ["Lane tests", C.lanes],
+  ];
+  let h = '<div class="cert">';
+  for (const [l, v] of cells) {
+    let t = ratio(v); if (t == null && v != null) t = String(v);
+    if (t == null) continue;
+    let cls = "";
+    const m = /^(\d+)\s*\/\s*(\d+)$/.exec(t);
+    if (m) cls = m[1] === m[2] ? "good" : "badc";
+    h += `<div class="${cls}"><div class="v">${esc(t)}</div><div class="l">${esc(l)}</div></div>`;
+  }
+  if (gfb != null) { const gm = /^(\d+)\s*\/\s*(\d+)/.exec(String(gfb)); h += `<div class="${gm ? (gm[1] === "0" ? "good" : "badc") : ""}"><div class="v">${esc(gm ? gm[1] + "/" + gm[2] : gfb)}</div><div class="l">benign actions blocked (guard)</div></div>`; }
+  if (C.passed === false || C.ok === false || C.certified === false) h += `<div class="badc"><div class="v">FAILED</div><div class="l">certification</div></div>`;
+  else if (C.certified) h = `<div class="okbox" style="margin-top:0">Certified${C.run_id ? " · run #" + esc(C.run_id) : ""}${line ? " · " + esc(line) : ""}</div>` + h;
+  h += "</div>";
+  return h;
+}
+function fidHtml() {
+  const f = S.case && S.case.fidelity;
+  if (!f) return "";
+  const bad = f.ok != null && f.total != null && f.ok < f.total;
+  return `<div class="fid"><span class="chip ${bad ? "warn" : "ok"}">fidelity</span> ${esc(f.line || (f.ok + "/" + f.total))}${f.model_checked ? ' <span class="chip">model-checked</span>' : ""}${arr(f.problems).length ? `<div class="note">${arr(f.problems).map(p => esc(typeof p === "object" ? (p.text || JSON.stringify(p)) : p)).join("<br>")}</div>` : ""}</div>`;
+}
+function rulesHtml(c) {
+  const rules = arr(c && c.key_rules);
+  if (!rules.length) return '<div class="empty">Rules appear after the documents are read.</div>';
+  return `<div class="rules">${rules.map(r => `<div class="rule" tabindex="0" title="${esc(r.quote || "")}"><div class="rt">${esc(r.text)}</div><div class="rs">${esc(r.slot || r.id || "")}${r.doc ? " · " + esc(r.doc) : ""}</div>${r.quote ? `<div class="rq"><b>${esc(r.doc || "source")}</b>“${esc(r.quote)}”</div>` : ""}</div>`).join("")}</div>`;
+}
+function ocrCells() {
+  const R = S.review || {}, C = S.case || {};
+  return arr(R.ocr_cells || R.ocr || C.ocr_cells || C.ocr_review || []).filter(x => x && typeof x === "object");
+}
+function renderCase() {
+  const c = S.case, el = $("#casebody");
+  if (S.view === "radar") return renderRadar();
+  if (typing(el)) return;
+  $("#casetitle").textContent = (c && (c.company || (c.company_name))) ? "Case File: " + (c.company || c.company_name) : "Case File";
+  if (!c) { el.innerHTML = `<div class="empty">No case file yet. Start a setup in the chat.</div>`; return; }
+  const facts = factList(c);
+  const counts = c.counts || {};
+  const inferred = counts.inferred ?? counts.sourced ?? facts.filter(f => provOf(f) === "sourced").length;
+  const asked = counts.asked ?? counts.attested ?? facts.filter(f => provOf(f) === "attested").length;
+  let h = `<div class="sum"><span class="big">inferred ${inferred} · asked ${asked}</span>
+    <span class="chip b-verified">verified</span><span class="chip b-sourced">sourced</span><span class="chip b-attested">attested</span><span class="chip b-assumed">assumed</span></div>`;
+  if (c.agent && c.agent.paused) h += `<div class="err">The setup session is paused after repeated or forbidden actions. <button class="sm" id="b-resume">Resume</button></div>`;
+  h += lanesHtml();
+  h += `<h5>Rules I understood (${arr(c.key_rules).length})</h5>${fidHtml()}${rulesHtml(c)}`;
+  h += `<h5>Certification</h5>${certHtml()}`;
+  const R0 = S.review || {};
+  const sad = R0.setup_attacks_detail || (R0.certification && R0.certification.setup_attacks_detail);
+  if (sad) h += `<div class="info" style="font-size:12px;color:var(--mute);margin-top:6px">${esc(short(typeof sad === "string" ? sad : JSON.stringify(sad), 300))}</div>`;
+  const cells = ocrCells();
+  if (cells.length) {
+    h += `<h5>Check these cells from the photo (${cells.length})</h5><div id="ocrbox">`;
+    cells.forEach((x, i) => {
+      h += `<div class="ocr" data-i="${i}"><div class="crop"></div>
+        <div style="flex:1"><div class="meta">${esc(x.col || x.column || "cell")} · row ${esc(x.row ?? "?")} · page ${esc(x.page ?? 1)} · confidence ${x.confidence != null ? Math.round(x.confidence * 100) + "%" : "?"}</div>
+        <div>${x.text != null ? `read as <b>${esc(x.text)}</b>` : `<b>needs your eyes</b>`}${x.second_read ? ` · second read <b>${esc(x.second_read)}</b>` : ""}${arr(x.flags).map(f => ` <span class="chip warn">${esc(f)}</span>`).join("")}${x.customer_id != null ? ` <span class="chip">customer ${esc(x.customer_id)}</span>` : ""}</div></div>
+        <input data-fix="${i}" placeholder="yes / no / value" value="${esc(x.text || "")}"><button class="sm" data-fixgo="${i}">Fix</button></div>`;
+    });
+    h += "</div>";
+  }
+  const known = facts.filter(f => provOf(f) !== "missing"), gone = facts.filter(f => provOf(f) === "missing");
+  h += `<h5>Facts (${known.length})${gone.length ? ` · ${gone.length} still empty` : ""}</h5>`;
+  if (!facts.length) h += `<div class="empty">Reading the site and files ...</div>`;
+  for (const f of known) {
+    const p = provOf(f), q = f.quote || f.source_quote || (p === "sourced" || p === "attested" ? f.source : "") || "";
+    const where = f.source_ref || f.source || f.doc || "";
+    h += `<div class="fact ${q ? "" : "noq"}"><div class="k" title="${esc(f.hint || "")}">${esc(f.label || f.key)}<small>${esc(f.key || "")}</small></div>
+      <div class="v">${fmtVal(f.value)}</div><div><span class="chip ${PROV[p]}">${p}</span></div>
+      ${q ? `<div class="quote"><b>${esc(where)}</b>“${esc(q)}”</div>` : ""}</div>`;
+  }
+  const data = c.data_facts || c.computed || null;
+  if (data && typeof data === "object") {
+    h += `<h5>From the data</h5>`;
+    for (const [k, v] of Object.entries(data)) h += `<div class="fact noq"><div class="k">${esc(k)}</div><div class="v">${fmtVal(v)}</div><div><span class="chip b-verified">computed</span></div></div>`;
+  }
+  h += `<div id="tomsg">${S.turnon ? turnonHtml() : ""}</div>
+    <div class="actions"><button class="pri" id="b-build">Build &amp; certify</button>
+    <button id="b-brief">Compliance Brief</button>
+    <button class="pri" id="b-turnon">Turn on</button>
+    <a href="/ui/owner.html" target="_blank" style="font-size:12px">owner page</a></div>`;
+  el.innerHTML = h;
+  cells.forEach((x, i) => drawCrop($(`.ocr[data-i="${i}"] .crop`, el), x));
+  const rs = $("#b-resume"); if (rs) rs.onclick = async () => { handleReply(await api("POST", "/api/setup2/resume", {})); say("Session resumed.", "sys"); };
+  $("#b-build").onclick = build; $("#b-brief").onclick = openBrief; $("#b-turnon").onclick = turnOn;
+}
+function turnonHtml() {
+  const t = S.turnon;
+  if (t.error) return `<div class="${t.unwired ? "note" : "err"}">${esc(t.error)}</div>`;
+  const link = t.url || t.link || (t.token ? "/t/" + t.token : "");
+  return `<div class="okbox">Turn-on requested. Waiting for the owner's tap${link ? ` on <a href="${esc(link)}" target="_blank">${esc(link)}</a>` : ""}.${t.attestations ? " " + arr(t.attestations).length + " attestation(s) listed for the owner." : ""}</div>`;
+}
+$("#casebody").addEventListener("click", async e => {
+  const b = e.target.closest("button[data-fixgo]"); if (!b) return;
+  const i = +b.dataset.fixgo, cell = ocrCells()[i], inp = $(`input[data-fix="${i}"]`);
+  say(`Fix ${cell.col || "cell"} row ${cell.row ?? "?"}: ${inp.value}`, "me");
+  // contract request: answer(qid="ocr:<cell id>", answer={cell, text})
+  handleReply(await api("POST", "/api/setup2/answer", { qid: "ocr:" + (cell.id ?? i), answer: { cell: cell.id ?? i, text: inp.value }, by: "owner" }));
+});
+function drawCrop(host, x) {
+  if (!host) return;
+  const url = x.crop_url || x.crop;
+  if (url) { host.innerHTML = `<img src="${esc(url)}" alt="crop">`; return; }
+  const src = x.image_url || x.image;
+  if (!src || !Array.isArray(x.bbox)) { host.innerHTML = '<div class="noimg">no image</div>'; return; }
+  const im = new Image();
+  im.onload = () => {
+    let [bx, by, bw, bh] = x.bbox.map(Number);
+    const frac = bx <= 1 && by <= 1 && bw <= 1 && bh <= 1;   // fractions of the page, else pixels
+    if (frac) { bx *= im.naturalWidth; by *= im.naturalHeight; bw *= im.naturalWidth; bh *= im.naturalHeight; }
+    const pad = 6; bx = Math.max(0, bx - pad); by = Math.max(0, by - pad); bw = Math.min(im.naturalWidth - bx, bw + pad * 2); bh = Math.min(im.naturalHeight - by, bh + pad * 2);
+    const cv = document.createElement("canvas"), sc = Math.min(3, 220 / bw);
+    cv.width = Math.max(1, Math.round(bw * sc)); cv.height = Math.max(1, Math.round(bh * sc));
+    cv.getContext("2d").drawImage(im, bx, by, bw, bh, 0, 0, cv.width, cv.height);
+    host.innerHTML = ""; host.appendChild(cv);
+  };
+  im.onerror = () => { host.innerHTML = '<div class="noimg">image missing</div>'; };
+  im.src = src;
+}
+
+/* ---- actions */
+async function build() {
+  const b = $("#b-build"); b.disabled = true; b.textContent = "Building ...";
+  say("Building rules and running certification ...", "sys");
+  const r = await api("POST", "/api/setup2/build", {});
+  handleReply(r);
+  b.disabled = false; b.textContent = "Build & certify";
+}
+async function turnOn() {
+  const r = await api("POST", "/api/setup2/request_turn_on", {});
+  S.turnon = r.ok ? (r.data || {}) : { error: r.unwired ? "Not wired yet: POST /api/setup2/request_turn_on" : r.error, unwired: r.unwired };
+  if (r.ok) say("Turn-on request sent to the owner page. The owner taps once to go live.", "sys");
+  renderCase();
+}
+async function openBrief() {
+  $("#drawer").classList.add("open");
+  const body = $("#drawerbody"); body.innerHTML = '<div class="empty">Loading ...</div>';
+  const r = await api("GET", "/api/compliance/brief");
+  if (r.unwired) { body.innerHTML = '<div class="note">Not wired yet: GET /api/compliance/brief</div>'; return; }
+  if (!r.ok) { body.innerHTML = `<div class="err">${esc(r.error)}</div>`; return; }
+  const b = r.data || {};
+  let h = "";
+  const items = arr(b.laws || b.items || b.statements || b.rules);
+  if (b.summary) h += `<p>${esc(typeof b.summary === "string" ? b.summary : JSON.stringify(b.summary))}</p>`;
+  for (const it of items) {
+    if (typeof it !== "object") { h += `<div class="item">${esc(it)}</div>`; continue; }
+    h += `<div class="item"><b>${esc(it.title || it.id || it.name || "")}</b> ${it.verified === false ? '<span class="chip warn">unverified, confirm with counsel</span>' : ""}
+      <div>${esc(it.text || it.statement || it.prova_enforces || it.requires || "")}${it.owner_must ? `<div class="q2">You: ${esc(it.owner_must)}</div>` : ""}</div>
+      ${it.quote ? `<div class="q2">“${esc(it.quote)}” ${esc(it.source_id || "")}</div>` : ""}</div>`;
+  }
+  const open = arr(b.unchecked_attestations).concat(arr(b.attestations).map(a => typeof a === "object" ? `${a.key}: ${a.source}` : a));
+  if (open.length) h += `<h5>Attestations to confirm</h5>` + open.map(a => `<div class="item">${esc(typeof a === "object" ? (a.text || a.fact || JSON.stringify(a)) : a)}</div>`).join("");
+  if (arr(b.owner_todos).length) h += `<h5>Stays with you</h5>` + b.owner_todos.map(a => `<div class="item">${esc(a)}</div>`).join("");
+  if (b.disclaimer) h += `<p class="empty">${esc(b.disclaimer)}</p>`;
+  if (b.lanes) { const c = laneCounts(b.lanes); if (c) h += `<h5>Lanes</h5>` + Object.entries(c).map(([k, v]) => `<div class="item">${LANE_NAME[k]}: ${v.n}</div>`).join(""); }
+  if (!h) h = `<pre style="white-space:pre-wrap;font-size:12px">${esc(JSON.stringify(b, null, 1))}</pre>`;
+  body.innerHTML = h;
+}
+$("#b-close").onclick = () => $("#drawer").classList.remove("open");
+
+/* ---- radar view (GET /api/radar) */
+async function renderRadar() {
+  const el = $("#casebody"); $("#casetitle").textContent = "Radar";
+  el.innerHTML = '<div class="empty">Loading ...</div>';
+  const r = await api("GET", "/api/radar");
+  if (r.unwired) { el.innerHTML = '<div class="note">Not wired yet: GET /api/radar</div>'; return; }
+  if (!r.ok) { el.innerHTML = `<div class="err">${esc(r.error)}</div>`; return; }
+  const d = r.data || {}, rows = arr(d.due || d.rows || d.customers);
+  let h = `<div class="sum"><span class="big">${rows.length} due</span>${d.eur_at_stake != null ? `<span class="chip warn">EUR ${esc(d.eur_at_stake)} at stake</span>` : ""}${d.goal ? `<span class="chip acc">${esc(d.goal_label || d.goal)}</span>` : ""}${d.error ? `<span class="chip bad">${esc(d.error)}</span>` : ""}</div>`;
+  if (d.reason) h += `<p class="empty">${esc(typeof d.reason === "string" ? d.reason : JSON.stringify(d.reason))}</p>`;
+  h += `<div id="radar"><table><tr><th>Customer</th><th>Due</th><th>EUR</th><th>Lane</th><th>Why</th></tr>`;
+  for (const x of rows) {
+    const lane = x.lane && typeof x.lane === "object" ? x.lane.lane : x.lane;
+    h += `<tr><td>${esc(x.name || x.customer || x.id)}</td><td>${esc(x.date || x.due || x.expiry_date || x.due_date || "")}${x.days != null ? ` (${esc(x.days)} d)` : ""}</td><td>${esc(x.eur ?? x.value ?? "")}</td><td>${lane ? `<span class="chip">${esc(LANE_NAME[lane] || lane)}</span>` : ""}</td><td>${esc(x.reason || "")} ${x.lane_reason ? `<span class="chip">${esc(x.lane_reason)}</span>` : ""}</td></tr>`;
+  }
+  el.innerHTML = h + "</table></div>" + (rows.length ? "" : '<div class="empty">Nothing due.</div>');
+}
+function setView(v) {
+  S.view = v;
+  document.querySelectorAll("#nav a[data-v]").forEach(a => a.classList.toggle("cur", a.dataset.v === v));
+  renderCase();
+}
+$("#b-radar").onclick = () => { location.hash = S.view === "radar" ? "" : "#radar"; };
+$("#b-refresh").onclick = () => loadAll();
+window.addEventListener("hashchange", () => setView(location.hash === "#radar" ? "radar" : "setup"));
+
+/* ---- Agent Monitor */
+const isTest = a => /eval-guard|eval-setup-attack|setup attack test/.test(String(a || ""));
+function rejectedFor(p) {
+  const rj = arr(S.case && S.case.rejected);
+  return rj.find(r => r.rule === p.rule && (!p.tool || r.tool === p.tool)) || null;
+}
+function argsLine(p) {
+  let a = p.args;
+  if (!a && p.rule === "injection_quarantined") { const r = rejectedFor(p); if (r) a = { doc: r.doc, preview: r.preview }; }
+  if (!a && p.key) a = { key: p.key };
+  if (a && typeof a === "object") {
+    if (p.rule === "injection_quarantined" && (a.doc || a.preview)) return short((a.doc || "") + (a.preview ? ": " + a.preview : ""), 140);
+    try { return short(JSON.stringify(a), 100); } catch (e) { /* fall through to the digest */ }
+  } else if (a) return short(String(a), 100);
+  return p.args_digest || "";
+}
+/* until the live stream delivers, show what the case file already knows: agent trace + rejected proposals */
+function seedMonitor() {
+  if (S.monitor.length && !S.seeded) return;
+  const c = S.case; if (!c) return;
+  const items = [];
+  arr(c.agent && c.agent.trace).forEach(t => items.push({ t: t.t, actor: t.actor, tool: t.tool, decision: t.decision || "allow", rule: t.rule === "ok" ? "" : t.rule, digest: "", phase: t.phase, hint: "" }));
+  arr(c.rejected).forEach(r => items.push({ t: "", actor: "setup_agent", tool: r.tool, decision: "deny", rule: r.rule, digest: argsLine(Object.assign({}, r, { args: r.doc || r.preview ? { doc: r.doc, preview: r.preview } : null })), phase: "", hint: r.hint || "", risk: r.rule === "injection_quarantined" ? 1 : null }));
+  items.reverse();
+  if (!items.length) return;
+  S.monitor = items.slice(0, 200); S.seeded = true;
+  const last = arr(c.agent && c.agent.trace).slice(-1)[0]; if (last && last.phase) S.phase = last.phase;
+  renderMonitor();
+}
+function pushAction(ev, p) {
+  if (S.seeded) { S.monitor = []; S.seeded = false; }
+  const decision = p.decision || (p.allowed === false ? "deny" : "allow");
+  S.monitor.unshift({ id: ev.id, t: ev.t, actor: p.actor, tool: p.tool || p.name || "?", decision, rule: p.rule || "", risk: p.risk, digest: argsLine(p), phase: p.phase, hint: p.hint || "" });
+  if (S.monitor.length > 200) S.monitor.length = 200;
+  if (p.phase) S.phase = p.phase;
+  renderMonitor();
+}
+function renderMonitor() {
+  const m = S.monitor.filter(x => S.showTest || !isTest(x.actor)), hidden = S.monitor.length - m.length, n = d => m.filter(x => x.decision === d).length;
+  $("#monstat").innerHTML = `<span class="chip ok">${n("allow")} allowed</span><span class="chip bad">${n("deny")} denied</span><span class="chip warn">${n("escalate")} escalated</span><label style="font-size:12px;color:var(--mute)"><input type="checkbox" id="showtest" ${S.showTest ? "checked" : ""}> show test traffic${hidden ? " (" + hidden + " hidden)" : ""}</label>`;
+  const cb = $("#showtest"); if (cb) cb.onchange = () => { S.showTest = cb.checked; renderMonitor(); };
+  $("#monphase").textContent = S.phase ? "phase " + S.phase : "";
+  $("#monlist").innerHTML = m.length ? m.slice(0, 80).map(x => {
+    const actor = x.actor && typeof x.actor === "object" ? (x.actor.name || x.actor.role || x.actor.id) : x.actor;
+    return `<div class="mon ${esc(x.decision)}"><div class="top"><span class="dec">${esc(x.decision)}</span><span class="tool">${esc(x.tool)}</span>
+      <span style="flex:1"></span><span class="sub">${x.risk != null ? "risk " + Number(x.risk).toFixed(2) : ""}</span></div>
+      <div class="sub">${x.rule ? "rule " + esc(x.rule) : ""}${actor ? " · " + esc(actor) : ""}</div>
+      ${x.digest ? `<div class="sub" style="font-family:var(--mono,monospace)">${esc(x.digest)}</div>` : ""}
+      ${x.hint && x.decision !== "allow" ? `<div class="sub">${esc(short(x.hint, 140))}</div>` : ""}</div>`;
+  }).join("") : '<div class="empty">No agent actions yet.</div>';
+}
+
+/* ---- events */
+function handleEvent(ev) {
+  if (!ev || !ev.type) return;
+  if (ev.id != null) { if (ev.id <= S.lastId) return; S.lastId = ev.id; }
+  const p = pj(ev.payload) || {};
+  switch (ev.type) {
+    case "agent_action": pushAction(ev, p); if (p.decision === "deny" || p.allowed === false) later("case", loadAll, 800); break;
+    case "setup": case "policy": case "question": case "eval": case "consent": case "handoff": later("all", loadAll, 500); break;
+  }
+}
+let es = null, fails = 0, poll = null;
+function startStream() {
+  try {
+    es = new EventSource("/api/events/stream?after=0");
+    es.onopen = () => { fails = 0; $("#conn").textContent = "live"; if (poll) { clearInterval(poll); poll = null; } };
+    const on = m => { try { handleEvent(JSON.parse(m.data)); } catch (e) {} };
+    es.onmessage = on; es.addEventListener("event", on);
+    es.onerror = () => { fails++; $("#conn").textContent = "reconnecting"; if (fails >= 2) { try { es.close(); } catch (e) {} startPoll(); } };
+  } catch (e) { startPoll(); }
+}
+function startPoll() {
+  if (poll) return; $("#conn").textContent = "polling";
+  poll = setInterval(async () => { const r = await api("GET", "/api/events?after=" + S.lastId); if (r.ok) arr(r.data).forEach(handleEvent); }, 1500);
+}
+
+/* ---- load */
+async function loadAll() {
+  const [c, q, rv, l] = await Promise.all([api("GET", "/api/setup2/case"), api("GET", "/api/setup2/questions"), api("GET", "/api/setup2/review"), api("GET", "/api/lanes")]);
+  if (c.ok && c.data && (c.data.facts || c.data.slots || c.data.company)) S.case = c.data;
+  if (q.ok) S.questions = arr(q.data && q.data.questions ? q.data.questions : q.data).filter(x => x && x.id && !x.answered && x.status !== "answered" && x.status !== "skipped");
+  if (rv.ok && rv.data) S.review = rv.data;
+  if (l.ok && l.data) S.lanes = l.data;
+  if (S.case && S.case.certification && !S.review) S.review = { certification: S.case.certification };
+  seedMonitor();
+  renderChat(); renderCase();
+}
+setView(location.hash === "#radar" ? "radar" : "setup");
+renderChat(); renderMonitor();
+loadAll(); startStream();
+</script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="common.css"><style>
+.chat{position:absolute;left:0;top:0;bottom:0;width:1080px;background:#f5f3ec;color:#2b2a27;padding:40px 60px;overflow:hidden}
+.top{font-size:24px;color:#7a766c;display:flex;justify-content:space-between;margin-bottom:26px}
+.top b{color:#2b2a27}
+.u{margin-left:auto;width:820px;background:#e8e4d8;border-radius:22px;padding:20px 26px;font-size:25px;line-height:1.4}
+.att{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.att span{background:#fff;border:1px solid #d6d0c0;border-radius:10px;padding:4px 10px;font-size:18px}
+.as{font-size:25px;margin:22px 0 12px;line-height:1.4}
+.tool{background:#fff;border:1px solid #ddd6c6;border-radius:14px;padding:10px 18px;margin-bottom:9px;font-size:21px;display:flex;gap:14px;align-items:center}
+.tool code{font-family:"Noto Sans Mono",monospace;font-size:20px;color:#7c4dff;white-space:nowrap}
+.tool .f{color:#555;white-space:nowrap}.tool .r{margin-left:auto;font-weight:700;color:#0f766e;white-space:nowrap}
+.tool .r.w{color:#c2410c}.tool .r.b{color:#be123c}
+.cf{position:absolute;left:1080px;right:0;top:0;bottom:0;padding:40px 46px;background:var(--bg)}
+.cf h2{font-size:34px;margin-bottom:6px}.cf .s{font-size:22px;color:var(--mut);margin-bottom:22px}
+.fact{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 18px;margin-bottom:10px}
+.fact .k{font-size:18px;color:var(--mut);text-transform:uppercase;letter-spacing:1px}
+.fact .v{font-size:26px;font-weight:700;margin:2px 0}
+.fact .q{font-size:19px;color:#a5b4fc;font-style:italic}
+.fact .q em{font-style:normal;color:var(--mut)}
+</style></head><body>
+<div class="chat">
+<div class="top"><b>Claude</b><span>Connector: Prova (MCP)</span></div>
+<div class="u a" id="u">Set up Prova for our office: Ασφαλιστικό Γραφείο Κωνσταντίνου, konstantinou-asfalies.example. Here are all our files.
+<div class="att"><span>pelates_2026.xlsx</span><span>palio_crm_export.csv</span><span>timokatalogos_2026.txt</span><span>email_odigies.txt</span><span>whatsapp_simeioseis.txt</span><span>tetradio.jpg</span></div></div>
+<div class="as a" id="as">I'll start a Prova setup and hand it every file.</div>
+<div class="tool a"><code>setup_start</code><span class="f">company + website</span><span class="r">session started · site read</span></div>
+<div class="tool a"><code>setup_add</code><span class="f">pelates_2026.xlsx</span><span class="r">2 sheets · monthly → annual premiums</span></div>
+<div class="tool a"><code>setup_add</code><span class="f">palio_crm_export.csv</span><span class="r">22 rows → 18 customers · 2 rejected</span></div>
+<div class="tool a"><code>setup_add</code><span class="f">timokatalogos_2026.txt</span><span class="r w">“18O” → 180 · 420 struck → 440</span></div>
+<div class="tool a"><code>setup_add</code><span class="f">email_odigies.txt</span><span class="r w">conflict: 20% vs 10% → owner question</span></div>
+<div class="tool a"><code>setup_add</code><span class="f">whatsapp_simeioseis.txt</span><span class="r b">⚠ injection quarantined</span></div>
+<div class="tool a"><code>setup_add</code><span class="f">tetradio.jpg</span><span class="r">handwriting read · 14 cells</span></div>
+</div>
+<div class="cf"><h2 class="a" id="h">Case File</h2><div class="s a" id="s">every fact carries the sentence it came from</div>
+<div class="fact a"><div class="k">Max discount</div><div class="v">10% · 15% for 5+ year customers</div><div class="q">«Έκπτωση έως 10%, 15% για πελάτες άνω των 5 ετών» <em>— email_odigies.txt, 9/11</em></div></div>
+<div class="fact a"><div class="k">Never discount</div><div class="v">Premium package</div><div class="q">«Ποτέ έκπτωση στο Premium» <em>— email_odigies.txt</em></div></div>
+<div class="fact a"><div class="k">Price · Βασικό αυτοκινήτου</div><div class="v">180 € / year</div><div class="q">«Πακέτο Βασικό … 18O €» <em>— timokatalogos, typo fixed</em></div></div>
+<div class="fact a"><div class="k">Do not call</div><div class="v">κα Κουτσοδήμου, until Marina speaks</div><div class="q">«Μην την πάρει κανείς πριν μιλήσω εγώ.» <em>— WhatsApp 8/11</em></div></div>
+<div class="fact a"><div class="k">Open debt</div><div class="v">Γεωργίου · 85 €</div><div class="q">«ο Γεωργίου χρωστάει ακόμα 85€» <em>— WhatsApp 8/11</em></div></div>
+<div class="fact a"><div class="k">Human handoff</div><div class="v">Μαρίνα Κωνσταντίνου</div><div class="q">«αν πάρει τηλέφωνο πείτε του να με ψάξει» <em>— WhatsApp</em></div></div>
+</div>
+<script src="common.js"></script><script>T(0,()=>on('#u'));T(.08,()=>on('#as'));seq('.tool',.12,.72);T(.2,()=>on('#h,#s'));seq('.fact',.25,.9)</script></body></html>

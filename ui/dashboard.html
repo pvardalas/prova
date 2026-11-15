@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prova Dashboard</title>
+<style>
+:root{
+  --bg:#f5f6f8; --panel:#fff; --line:#e1e4ea; --line2:#eef0f4; --text:#1c2230; --mute:#677086;
+  --acc:#2458c6; --acc-bg:#e8effc; --ok:#1c8a4e; --ok-bg:#e3f4ea; --bad:#c62f2f; --bad-bg:#fbe7e7;
+  --warn:#a86500; --warn-bg:#fff1d6; --grey:#9aa2b2;
+  --font:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans","Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;font:15px/1.5 var(--font);background:var(--bg);color:var(--text)}
+header{display:flex;align-items:center;gap:16px;padding:10px 20px;background:var(--panel);border-bottom:1px solid var(--line);flex-wrap:wrap}
+header .brand{font-weight:700;color:var(--acc);font-size:17px}
+header nav{display:flex;gap:4px}
+header nav a{padding:5px 12px;border-radius:6px;color:var(--mute);text-decoration:none;font-weight:600}
+header nav a:hover{background:var(--line2)}
+header nav a.cur{background:var(--acc-bg);color:var(--acc)}
+.sp{flex:1}
+.mute{color:var(--mute)}
+main{max-width:1200px;margin:0 auto;padding:18px 20px 40px}
+.top{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:14px}
+.top h1{margin:0;font-size:26px}
+.chip{display:inline-block;padding:2px 10px;border-radius:99px;font-size:12px;font-weight:700;background:var(--line2);color:var(--mute)}
+.chip.ok{background:var(--ok-bg);color:var(--ok)}.chip.bad{background:var(--bad-bg);color:var(--bad)}.chip.warn{background:var(--warn-bg);color:var(--warn)}.chip.acc{background:var(--acc-bg);color:var(--acc)}
+.status{font-size:14px;padding:5px 14px}
+.cost{font-size:15px;color:var(--mute)}
+#strip{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap}
+.step{flex:1;min-width:150px;padding:12px 14px;border-radius:10px;background:var(--panel);border:1px solid var(--line);color:var(--mute);font-weight:600}
+.step b{display:inline-block;width:24px;height:24px;line-height:24px;text-align:center;border-radius:50%;background:var(--line2);margin-right:8px;font-size:13px}
+.step.done{color:var(--ok)}.step.done b{background:var(--ok);color:#fff}
+.step.cur{border-color:var(--acc);background:var(--acc-bg);color:var(--acc)}.step.cur b{background:var(--acc);color:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(480px,1fr));gap:16px}
+@media(max-width:560px){.grid{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:16px}
+.card h2{margin:0 0 4px;font-size:13px;text-transform:uppercase;letter-spacing:.6px;color:var(--mute)}
+.card .sub{color:var(--mute);font-size:13px;margin-bottom:10px}
+.kpis{display:flex;gap:12px;flex-wrap:wrap;margin:8px 0 12px}
+.kpi{background:var(--line2);border-radius:10px;padding:8px 16px;min-width:110px}
+.kpi b{display:block;font-size:24px}.kpi span{font-size:12px;color:var(--mute)}
+.row{padding:8px 0;border-top:1px solid var(--line2);display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap}
+.row:first-of-type{border-top:0}
+.row .k{width:200px;color:var(--mute);font-size:13px;flex:none}
+.row .v{flex:1;min-width:160px;font-weight:600;word-break:break-word}
+.q{padding:10px 12px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px}
+.q.open{border-color:#f0d9a8;background:var(--warn-bg)}
+.q .opts{margin-top:6px;display:flex;gap:6px;flex-wrap:wrap}
+.q .opts span{padding:2px 10px;border:1px solid var(--line);background:#fff;border-radius:99px;font-size:13px}
+.q .a{margin-top:6px;color:var(--ok);font-weight:600}
+.goal{padding:10px 12px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.goal.active{border-color:var(--ok);background:var(--ok-bg)}
+.goal .t{flex:1;min-width:200px;font-weight:600}
+.rule{padding:8px 0;border-top:1px solid var(--line2)}.rule:first-of-type{border-top:0}
+.rule .q2{color:var(--mute);font-size:13px;font-style:italic}
+#turnon .big{font-size:22px;padding:16px 40px;border-radius:12px;border:0;background:var(--ok);color:#fff;font-weight:700;cursor:pointer}
+#turnon .big:hover{filter:brightness(1.1)}#turnon .big:disabled{opacity:.5;cursor:not-allowed}
+.live{font-size:26px;font-weight:800;color:var(--ok)}
+.mon{padding:8px 12px;border-left:4px solid var(--grey);background:var(--line2);border-radius:6px;margin-bottom:6px}
+.mon.allow{border-color:var(--ok)}.mon.deny{border-color:var(--bad);background:var(--bad-bg)}.mon.quarantine,.mon.escalate{border-color:var(--warn);background:var(--warn-bg)}
+.mon .top2{display:flex;gap:10px;align-items:center}.mon .dec{font-weight:700;text-transform:uppercase;font-size:12px}
+.mon .tool{font-family:var(--mono);font-size:13px}
+.mon .sub2{font-size:12px;color:var(--mute);font-family:var(--mono);word-break:break-all}
+#monlist{max-height:420px;overflow:auto}
+.empty{color:var(--mute);padding:6px 0}
+.links{display:flex;gap:12px;flex-wrap:wrap;margin-top:6px}
+.links a{padding:12px 22px;background:var(--panel);border:1px solid var(--line);border-radius:10px;text-decoration:none;color:var(--acc);font-weight:700}
+.links a:hover{border-color:var(--acc)}
+.msg{margin-top:10px;color:var(--bad);font-weight:600}
+</style>
+</head>
+<body>
+<header>
+  <span class="brand">Prova</span>
+  <nav><a href="/" class="cur">Dashboard</a><a href="/ui/playbook.html">Playbook</a><a href="/ui/lab.html">Sandbox</a><a href="/ui/index.html#s7">Live calls</a><a href="http://127.0.0.1:8799/ui/index.html#s7" target="_blank" rel="noopener" title="Finished showcase run: calls, rehearsals, results">Demo</a></nav>
+  <span class="sp"></span><span class="mute" id="conn"></span>
+</header>
+<main>
+  <div class="top"><h1 id="co">Prova</h1><span class="chip status" id="st">…</span><span class="sp"></span><span class="cost" id="cost"></span></div>
+  <div id="strip"></div>
+  <div class="grid">
+    <div>
+      <div class="card"><h2>What the agent read</h2><div class="sub">Files and facts your agent gave Prova. Hover a fact to see the source quote.</div><div id="read"></div></div>
+      <div class="card"><h2>Questions for the owner</h2><div class="sub" id="qhint"></div><div id="qs"></div></div>
+      <div class="card"><h2>Goals</h2><div id="goals"></div></div>
+    </div>
+    <div>
+      <div class="card"><h2>Rules I understood</h2><div id="rules"></div><div id="cert"></div></div>
+      <div class="card" id="turnon"></div>
+      <div class="card"><h2>Agent Monitor</h2><div class="sub" id="monstat"></div><div id="monlist"></div></div>
+    </div>
+  </div>
+  <div class="card"><h2>Go further</h2><div class="links"><a href="/ui/playbook.html">Playbook</a><a href="/ui/lab.html">Sandbox</a><a href="/ui/index.html#s7">Live calls</a></div><div id="report" class="sub" style="margin-top:10px"></div></div>
+</main>
+<script>
+"use strict";
+const $ = s => document.querySelector(s);
+const esc = v => String(v == null ? "" : v).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const pj = v => { if (typeof v === "string") { try { return JSON.parse(v); } catch (e) { return v; } } return v; };
+const arr = v => Array.isArray(v) ? v : (v && typeof v === "object" ? Object.values(v) : []);
+const short = (s, n) => { s = String(s == null ? "" : s); return s.length > n ? s.slice(0, n - 1) + "…" : s; };
+const eur = n => (Number(n) || 0).toLocaleString("en", { maximumFractionDigits: 2 }) + " €";
+async function api(method, path, body) {
+  try {
+    const o = { method, headers: {} };
+    if (body !== undefined) { o.headers["Content-Type"] = "application/json"; o.body = JSON.stringify(body); }
+    const r = await fetch(path, o), txt = await r.text();
+    let d = null; try { d = txt ? JSON.parse(txt) : null; } catch (e) { d = null; }
+    if (!r.ok || (d && d.error)) return { ok: false, error: (d && (d.error || (typeof d.detail === "string" ? d.detail : d.detail && d.detail.error))) || r.status };
+    return { ok: true, data: d };
+  } catch (e) { return { ok: false, error: "Network error" }; }
+}
+const S = { case: null, qs: [], review: null, goals: null, lanes: null, status: null, owner: null, report: null, monitor: [], lastId: 0, playbooks: {}, msg: "" };
+const isTest = a => /eval-guard|eval-setup-attack|setup attack test/.test(String(a || ""));
+const actorName = a => a && typeof a === "object" ? (a.name || a.role || a.id || "") : (a || "");
+
+function stepIndex() {
+  const c = S.case || {}, o = S.owner || {}, st = String((S.status && S.status.company && S.status.company.status) || o.status || "").toLowerCase();
+  if (c.live || st === "live" || o.status === "live") return 6;
+  if (o.pending_turn_on) return 5;
+  const cert = c.certification || (S.review && S.review.certification);
+  const ph = String(c.phase || "").toUpperCase();
+  if (cert || /CERT|BUILD|REVIEW|TURN|READY/.test(ph)) return o.pending_turn_on ? 5 : 4;
+  if (arr(c.goals_active).length || c.goal) return 4;
+  if (arr(S.qs).some(q => !isAnswered(q))) return 2;
+  if ((c.data_facts && c.data_facts.customers) || (c.counts && (c.counts.sourced || c.counts.attested))) return arr(c.goal_proposals).length ? 3 : 2;
+  return 1;
+}
+const isAnswered = q => q && (q.answered || q.status === "answered" || q.status === "skipped" || q.answer != null);
+
+function renderHead() {
+  const c = S.case || {}, o = S.owner || {}, co = S.status && S.status.company || {};
+  $("#co").textContent = co.name || o.company || c.company || "New company";
+  const i = stepIndex(), live = i === 6, wait = i === 5;
+  const el = $("#st"); el.className = "chip status " + (live ? "ok" : wait ? "warn" : "acc");
+  el.textContent = live ? "Live" : wait ? "Waiting for owner" : "Setting up";
+  const cost = S.status && S.status.cost_total_eur;
+  $("#cost").textContent = cost != null ? "Real-model cost: " + eur(cost) : "";
+  const names = ["Reading files", "Questions", "Goals", "Rules & safety check", "Owner turn-on", "Live"];
+  $("#strip").innerHTML = names.map((n, k) => `<div class="step ${k + 1 < i ? "done" : k + 1 === i ? "cur" : ""}"><b>${k + 1 < i ? "✓" : k + 1}</b>${esc(n)}</div>`).join("");
+}
+const provChip = p => { p = String(p || ""); const cls = /sourc|fill|confirm|attest/.test(p) ? "ok" : /assum/.test(p) ? "warn" : ""; return `<span class="chip ${cls}">${esc(p || "n/a")}</span>`; };
+const fmtVal = v => v == null ? "" : typeof v === "object" ? short(JSON.stringify(v), 160) : String(v);
+function renderRead() {
+  const c = S.case || {}, df = c.data_facts || {}, st = S.status || {}, cnt = (st.counts) || {};
+  const photos = arr(S.review && S.review.ocr_cells).length;
+  let h = `<div class="kpis"><div class="kpi"><b>${esc(cnt.docs != null ? cnt.docs : "–")}</b><span>documents</span></div>
+    <div class="kpi"><b>${esc(df.customers != null ? df.customers : "–")}</b><span>customers (merged)</span></div>
+    <div class="kpi"><b>${photos}</b><span>photo cells read</span></div>
+    <div class="kpi"><b>${df.eur_at_stake != null ? esc(eur(df.eur_at_stake)) : "–"}</b><span>at stake</span></div></div>`;
+  const slots = Object.entries(c.slots || {}).filter(([, s]) => s && s.value != null && s.value !== "" && !(typeof s.value === "object" && !Object.keys(s.value).length));
+  h += slots.length ? slots.map(([k, s]) => {
+    const src = s.source && typeof s.source === "object" ? (s.source.quote || s.source.doc || JSON.stringify(s.source)) : s.source || "";
+    return `<div class="row" title="${esc(src)}"><div class="k">${esc(s.label ? short(s.label.split("(")[0], 40) : k)}</div><div class="v">${esc(fmtVal(s.value))}</div>${provChip(s.provenance || s.status)}</div>`;
+  }).join("") : '<div class="empty">No facts yet. Your agent will add files with setup_add.</div>';
+  $("#read").innerHTML = h;
+}
+function renderQs() {
+  const qs = arr(S.qs), open = qs.filter(q => !isAnswered(q)), done = qs.filter(isAnswered);
+  $("#qhint").textContent = open.length ? "Answer these through your agent. This page is read-only." : "";
+  let h = open.map(q => `<div class="q open"><b>${esc(q.text || q.question || q.id)}</b>${arr(q.options || q.choices).length ? `<div class="opts">${arr(q.options || q.choices).map(o => `<span>${esc(typeof o === "object" ? (o.label || o.text || o.value) : o)}</span>`).join("")}</div>` : ""}<div class="sub" style="margin:6px 0 0">Answer it through your agent.</div></div>`).join("");
+  h += done.map(q => { const by = q.answered_by || q.by || q.actor; const a = q.answer != null ? (typeof q.answer === "object" ? JSON.stringify(q.answer) : q.answer) : q.status;
+    return `<div class="q"><b>${esc(q.text || q.question || q.id)}</b><div class="a">${esc(a)} <span class="mute" style="font-weight:400">· ${esc(actorName(by) || "owner")}</span></div></div>`; }).join("");
+  $("#qs").innerHTML = h || '<div class="empty">No questions yet.</div>';
+}
+function renderGoals() {
+  const g = S.goals || {}, pr = arr(g.proposals), act = arr(g.active);
+  $("#goals").innerHTML = pr.length ? pr.map(x => {
+    const on = x.active || act.includes(x.goal);
+    return `<div class="goal ${on ? "active" : ""}"><div class="t">${esc(x.label || x.goal)}<div class="mute" style="font-weight:400;font-size:13px">${esc(short(x.why, 150))}</div></div>
+      <span class="chip">${esc(x.due_count != null ? x.due_count : 0)} due</span><span class="chip acc">${esc(eur(x.eur_at_stake))}</span>${on ? '<span class="chip ok">active</span>' : ""}</div>`;
+  }).join("") : '<div class="empty">No goal proposals yet. They appear once customers are read.</div>';
+}
+function renderRules() {
+  const c = S.case || {}, rules = arr(c.key_rules), f = c.fidelity;
+  let h = f ? `<div style="margin-bottom:8px"><span class="chip ${f.ok != null && f.ok < f.total ? "warn" : "ok"}">fidelity</span> ${esc(f.line || (f.ok + "/" + f.total))}</div>` : "";
+  h += rules.length ? rules.map(x => `<div class="rule" title="${esc(x.quote || "")}"><b>${esc(x.text)}</b><div class="mute" style="font-size:12px">${esc(x.doc || "")}${x.slot ? " · " + esc(x.slot) : ""}</div>${x.quote && x.quote !== "default" ? `<div class="q2">“${esc(short(x.quote, 220))}”</div>` : ""}</div>`).join("") : '<div class="empty">No rules yet.</div>';
+  $("#rules").innerHTML = h;
+  const cert = c.certification || (S.review && S.review.certification) || (S.owner && S.owner.certification) || (S.owner && S.owner.pending_turn_on && S.owner.pending_turn_on.certification);
+  const t = x => x && typeof x === "object" ? (x.passed ?? x.caught ?? "?") + "/" + (x.total ?? "?") : x;
+  $("#cert").innerHTML = cert ? `<div class="kpis" style="margin-top:12px"><div class="kpi"><b>${cert.ok === false || (cert.failed > 0) ? "Failed" : "Passed"}</b><span>certification</span></div>
+    <div class="kpi"><b>${esc(t(cert.setup_attacks) || "–")}</b><span>setup attacks stopped</span></div>
+    <div class="kpi"><b>${esc(t(cert.attacks) || "–")}</b><span>attacks</span></div>
+    ${c.fidelity ? `<div class="kpi"><b>${esc(c.fidelity.ok != null ? c.fidelity.ok + "/" + c.fidelity.total : "ok")}</b><span>fidelity</span></div>` : ""}</div>` : '<div class="sub" style="margin-top:10px">Safety check has not run yet.</div>';
+}
+function renderTurnOn() {
+  const o = S.owner || {}, p = o.pending_turn_on, el = $("#turnon");
+  if (stepIndex() === 6 && !p) { el.innerHTML = '<h2>Turn on</h2><div class="live">● Live</div><div class="sub">Calling is on.</div>'; return; }
+  if (!p || (!p.token && !p.attestations)) { el.innerHTML = '<h2>Turn on</h2><div class="empty">Waiting for your agent to finish setup and request turn-on.</div>'; return; }
+  const gaps = arr(p.gaps);
+  el.innerHTML = `<h2>Turn on</h2><div class="sub">Your agent asks you to turn Prova on. Check the rules on this page first.</div>
+    ${gaps.length ? `<div class="msg" style="color:var(--warn)">Still open: ${esc(gaps.map(g => g.text || g.fact || g).join("; "))}</div>` : ""}
+    <button class="big" id="go" ${gaps.length ? "disabled" : ""}>Turn on</button><div class="msg" id="gomsg">${esc(S.msg)}</div>`;
+  $("#go").onclick = async () => {
+    $("#go").disabled = true;
+    const r = await api("POST", "/api/owner/turn_on", { token: p.token });
+    if (r.ok) { S.msg = ""; loadAll(); } else { S.msg = String(r.error); $("#gomsg").textContent = S.msg; $("#go").disabled = false; }
+  };
+}
+function renderMonitor() {
+  const m = S.monitor.filter(x => !isTest(actorName(x.actor))), n = d => m.filter(x => x.decision === d).length;
+  $("#monstat").innerHTML = `<span class="chip ok">${n("allow")} allowed</span> <span class="chip bad">${n("deny")} denied</span> <span class="chip warn">${n("quarantine") + n("escalate")} quarantined / escalated</span>`;
+  $("#monlist").innerHTML = m.length ? m.slice(0, 60).map(x => `<div class="mon ${esc(x.decision)}"><div class="top2"><span class="dec">${esc(x.decision)}</span><span class="tool">${esc(x.tool)}</span><span class="sp"></span><span class="mute" style="font-size:12px">${esc(actorName(x.actor))}</span></div>
+    ${x.rule ? `<div class="mute" style="font-size:12px">rule ${esc(x.rule)}</div>` : ""}${x.digest ? `<div class="sub2">${esc(short(x.digest, 160))}</div>` : ""}</div>`).join("") : '<div class="empty">No agent actions yet.</div>';
+}
+function renderReport() {
+  const r = S.report; if (!r || typeof r !== "object") { $("#report").textContent = ""; return; }
+  const bits = []; if (r.won != null) bits.push("won " + r.won); if (r.value_won != null) bits.push("value " + eur(r.value_won)); if (r.calls != null) bits.push("calls " + r.calls);
+  $("#report").textContent = bits.length ? "Report: " + bits.join(" · ") : "";
+}
+function renderAll() { renderHead(); renderRead(); renderQs(); renderGoals(); renderRules(); renderTurnOn(); renderMonitor(); renderReport(); }
+
+function seedMonitor() {
+  const c = S.case; if (!c || S.monitor.length) return;
+  const items = [];
+  arr(c.agent && c.agent.trace).forEach(t => items.push({ actor: t.actor, tool: t.tool, decision: t.decision || "allow", rule: t.rule === "ok" ? "" : t.rule, digest: "" }));
+  arr(c.rejected).forEach(r => items.push({ actor: "setup_agent", tool: r.tool, decision: r.rule === "injection_quarantined" ? "quarantine" : "deny", rule: r.rule, digest: (r.doc ? r.doc + ": " : "") + (r.preview || r.hint || "") }));
+  S.monitor = items.reverse().slice(0, 200);
+}
+function pushAction(ev, p) {
+  const decision = p.decision || (p.allowed === false ? "deny" : "allow");
+  const dg = p.args ? (typeof p.args === "object" ? JSON.stringify(p.args) : p.args) : (p.preview || p.args_digest || "");
+  S.monitor.unshift({ id: ev.id, actor: p.actor, tool: p.tool || p.name || "?", decision: p.rule === "injection_quarantined" ? "quarantine" : decision, rule: p.rule || "", digest: dg });
+  if (S.monitor.length > 200) S.monitor.length = 200;
+  renderMonitor();
+}
+let timer = null;
+function later(fn, ms) { clearTimeout(timer); timer = setTimeout(fn, ms); }
+function handleEvent(ev) {
+  if (!ev || !ev.type) return;
+  if (ev.id != null) { if (ev.id <= S.lastId) return; S.lastId = ev.id; }
+  const p = pj(ev.payload) || {};
+  if (ev.type === "agent_action") { pushAction(ev, p); later(loadAll, 800); }
+  else if (/setup|policy|question|eval|consent|handoff|goal|owner|turn_on/.test(ev.type)) later(loadAll, 500);
+}
+function startStream() {
+  try {
+    const es = new EventSource("/api/events/stream?after=0");
+    es.onopen = () => { $("#conn").textContent = "live"; };
+    const on = m => { try { handleEvent(JSON.parse(m.data)); } catch (e) {} };
+    es.onmessage = on; es.addEventListener("event", on);
+    es.onerror = () => { $("#conn").textContent = "reconnecting…"; };
+  } catch (e) { $("#conn").textContent = "polling"; }
+}
+async function loadAll() {
+  const [c, q, rv, g, l, st, o, rp] = await Promise.all(["/api/setup2/case", "/api/setup2/questions", "/api/setup2/review", "/api/goals", "/api/lanes", "/api/status", "/api/owner", "/api/report"].map(p => api("GET", p)));
+  if (c.ok && c.data) S.case = c.data;
+  if (q.ok) S.qs = arr(q.data && q.data.questions ? q.data.questions : q.data).filter(x => x && typeof x === "object");
+  if (rv.ok) S.review = rv.data;
+  if (g.ok) S.goals = g.data;
+  if (l.ok) S.lanes = l.data;
+  if (st.ok) S.status = st.data;
+  if (o.ok) S.owner = o.data;
+  if (rp.ok) S.report = rp.data;
+  seedMonitor();
+  renderAll();
+}
+renderAll(); loadAll(); startStream(); setInterval(loadAll, 3000);
+</script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="common.css"><style>
+.h{position:absolute;left:80px;top:120px;font-size:52px;font-weight:800}
+.cols{position:absolute;left:60px;right:60px;top:220px;display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+.col{background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:24px;min-height:720px}
+.col h3{font-size:32px;margin-bottom:4px}.col .s{font-size:21px;color:var(--mut);margin-bottom:20px}
+.col.ai h3{color:var(--acc)}.col.cl h3{color:var(--acc2)}.col.hu h3{color:#facc15}.col.ho h3{color:var(--warn)}
+.n{background:#0f1524;border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin-bottom:10px;font-size:24px}
+.n small{display:block;font-size:18px;color:var(--mut)}
+.n.never{border-color:var(--bad);color:#fda4af}.n.never small{color:#fda4af}
+.n.m{border-color:var(--warn)}
+</style></head><body><div class="brand">Prova</div><div class="bar"></div>
+<div class="h a" id="h">Every client gets a lane</div>
+<div class="cols">
+<div class="col ai a"><h3>AI call</h3><div class="s">consent covers a call</div>
+<div class="n">Γεωργίου Νίκος<small>renewal + 85 € balance</small></div><div class="n">Ράπτης Παναγιώτης<small>renewal · 12 years</small></div><div class="n">Λέκκας Γιώργος<small>renewal · 15% eligible</small></div><div class="n">Βλάχου Ελένη<small>renewal · max 10%</small></div></div>
+<div class="col cl a"><h3>Consent link</h3><div class="s">“?” or blank consent: ask first</div>
+<div class="n">18 clients<small>link by SMS / email, no call</small></div><div class="n">Müller Hans<small>email, in English</small></div></div>
+<div class="col hu a"><h3>Human call</h3><div class="s">Στέλιος calls</div>
+<div class="n">Νικολόπουλος<small>landline only</small></div><div class="n">Ζαχαρίου<small>mornings, phone only</small></div></div>
+<div class="col ho a"><h3>Hold</h3><div class="s">waits for Μαρίνα</div>
+<div class="n m">Κουτσοδήμου<small>bereavement · Μαρίνα first</small></div><div class="n m">Καραγιάννης Πέτρος<small>open complaint → Μαρίνα</small></div>
+<div class="n never">Παπαϊωάννου<small>«ΟΧΙ τηλέφωνα» · never called</small></div></div>
+</div>
+<script src="common.js"></script><script>T(0,()=>on('#h'));seq('.col',.02,.15);seq('.col.ai .n,.col.cl .n,.col.hu .n',.18,.5);seq('.col.ho .n',.55,.85)</script></body></html>

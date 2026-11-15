@@ -1,0 +1,24 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="common.css"><style>
+.ph{position:absolute;left:1080px;top:60px;width:500px;height:960px;border-radius:60px;border:14px solid #2a3142;background:#fbfaf7;color:#1f2430;padding:56px 30px 30px;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+.ph h4{font-size:30px;margin-bottom:4px}.ph .s{font-size:18px;color:#6b7280;margin-bottom:18px}
+.ru{font-size:21px;border-left:5px solid #0d9488;background:#eef7f5;padding:10px 14px;margin-bottom:10px;border-radius:6px;line-height:1.3}
+.btn{margin-top:20px;background:#0d9488;color:#fff;font-size:30px;font-weight:800;text-align:center;padding:22px;border-radius:18px;position:relative;overflow:hidden;transition:background .4s}
+.btn.done{background:#16a34a}
+.tap{position:absolute;width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,.6);left:50%;top:50%;transform:translate(-50%,-50%) scale(0);opacity:0}
+.tap.go2{animation:t 0.8s ease-out}@keyframes t{0%{transform:translate(-50%,-50%) scale(0);opacity:1}100%{transform:translate(-50%,-50%) scale(5);opacity:0}}
+.l{position:absolute;left:100px;top:260px;width:860px}
+.l .big{font-size:62px;font-weight:800;line-height:1.15}
+.l p{font-size:36px;color:var(--mut);margin-top:30px;line-height:1.4}
+.l .x{margin-top:40px;font-size:30px;padding:18px 26px;border:2px solid var(--bad);border-radius:16px;color:#fecdd3;font-family:"Noto Sans Mono",monospace}
+</style></head><body><div class="brand">Prova</div><div class="bar"></div>
+<div class="l"><div class="big a" id="b">Only the human owner can turn it on.</div><p class="a" id="p">Key rules in plain Greek. One tap.</p><div class="x a" id="x">agent → turn_on() ✕ refused: owner only</div></div>
+<div class="ph a" id="ph"><h4>Ενεργοποίηση Prova</h4><div class="s">Ασφαλιστικό Γραφείο Κωνσταντίνου · για τη Μαρίνα</div>
+<div class="ru a">Έκπτωση έως 10% (15% για πελάτες 5+ ετών)</div>
+<div class="ru a">Ποτέ έκπτωση στο Premium</div>
+<div class="ru a">Κλήσεις Δευτέρα–Σάββατο, 09:00–20:00</div>
+<div class="ru a">Χωρίς συγκατάθεση: μόνο σύνδεσμος, όχι κλήση</div>
+<div class="ru a">Κουτσοδήμου, Καραγιάννης → Μαρίνα</div>
+<div class="ru a">Τίποτα δεν δεσμεύει στο τηλέφωνο: γραπτή επιβεβαίωση</div>
+<div class="btn a" id="btn"><span id="bt">Ενεργοποίηση</span><div class="tap" id="tap"></div></div></div>
+<script src="common.js"></script><script>T(0,()=>on('#b'));T(.05,()=>on('#ph'));seq('.ru',.1,.5);T(.3,()=>on('#p'));T(.55,()=>on('#btn'));
+T(.68,()=>{$('#tap').classList.add('go2')});T(.72,()=>{$('#btn').classList.add('done');$('#bt').textContent='Ενεργό ✓'});T(.8,()=>on('#x'))</script></body></html>

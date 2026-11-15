@@ -1,0 +1,17 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="common.css"><style>
+.h{position:absolute;left:80px;top:120px;font-size:52px;font-weight:800}
+.cols{position:absolute;left:60px;right:60px;top:230px;display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.col{background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:24px;min-height:700px}
+.col h3{font-size:32px;margin-bottom:20px}
+#c0 h3{color:var(--acc2)}#c1 h3{color:var(--ok)}#c2 h3{color:var(--mut)}
+.card{background:#0f1524;border:2px solid var(--line);border-radius:16px;padding:18px 22px;margin-bottom:16px;font-size:27px;transition:opacity .5s}
+.card small{display:block;font-size:20px;color:var(--mut);margin-top:6px}
+#c1 .card{border-color:var(--ok)}#c2 .card{opacity:.5;text-decoration:line-through}
+</style></head><body><div class="brand">Prova</div><div class="bar"></div>
+<div class="h a" id="h">The playbook learns from every call</div>
+<div class="cols"><div class="col" id="c0"><h3>Candidate</h3></div><div class="col" id="c1"><h3>Proven</h3></div><div class="col" id="c2"><h3>Retired</h3></div></div>
+<script src="common.js"></script><script>
+const cards=[['k1','Mention the balance after the renewal offer','born from call #4',0],['k2','Lead with loyalty years for 5+ year clients','born from call #2',0],['k3','Offer the max discount upfront','born from call #1',0]];
+cards.forEach(([id,t,s,c])=>{const d=document.createElement('div');d.className='card a';d.id=id;d.innerHTML=t+'<small>'+s+'</small>';$('#c'+c).appendChild(d)});
+function mv(id,c,note){const e=$('#'+id);e.querySelector('small').textContent=note;$('#c'+c).appendChild(e)}
+T(0,()=>on('#h'));seq('.card',.05,.3);T(.45,()=>mv('k2',1,'promoted · win rate 64%'));T(.6,()=>mv('k3',2,'retired · lowered confirmations'));T(.75,()=>mv('k1',1,'promoted · win rate 58%'))</script></body></html>

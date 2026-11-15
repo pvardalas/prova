@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "prova": {
+      "command": "uv",
+      "args": ["run", "--directory", "/home/panos/Hackathons/Prova", "python", "-m", "prova.mcp_server"],
+      "env": {"PROVA_URL": "http://127.0.0.1:8793"}
+    }
+  }
+}

@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prova Mission</title>
+<style>
+:root{
+  --bg:#0b0f17; --panel:#141b28; --line:#243049; --text:#f2f5fa; --mute:#8d9ab3;
+  --acc:#5b8dff; --ok:#33d17a; --bad:#ff4d4d; --warn:#ffb020; --vio:#b58cff;
+  --font:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans","Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden}
+body{font:20px/1.35 var(--font);background:var(--bg);color:var(--text);display:flex;flex-direction:column}
+a{color:var(--acc)}
+#top{display:flex;align-items:center;gap:22px;padding:12px 28px;border-bottom:1px solid var(--line);flex:none}
+#top .brand{font-size:26px;font-weight:800;color:var(--acc);letter-spacing:.5px}
+#top .co{font-size:24px;font-weight:600}
+#top nav{margin-left:auto;display:flex;gap:6px;font-size:15px}
+#top nav a{padding:4px 12px;border-radius:6px;text-decoration:none;color:var(--mute)}
+#top nav a.cur{background:var(--panel);color:var(--text)}
+#stages{display:flex;gap:10px;padding:14px 28px;flex:none}
+.st{flex:1;border:2px solid var(--line);border-radius:14px;padding:12px 18px;display:flex;align-items:center;gap:14px;color:var(--mute);font-size:30px;font-weight:700;transition:all .3s}
+.st small{display:block;font-size:16px;font-weight:500}
+.st .dot{width:20px;height:20px;border-radius:50%;background:var(--line);flex:none}
+.st.on{border-color:var(--acc);color:var(--text);background:#16213a}
+.st.on .dot{background:var(--acc);animation:pulse 1.2s infinite}
+.st.done{border-color:var(--ok);color:var(--ok)}.st.done .dot{background:var(--ok)}
+@keyframes pulse{50%{box-shadow:0 0 0 12px rgba(91,141,255,.18)}}
+#main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.6fr) minmax(360px,1fr);gap:18px;padding:0 28px 14px}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:16px;display:flex;flex-direction:column;min-height:0}
+.box>h3{margin:0;padding:12px 20px;font-size:15px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mute);border-bottom:1px solid var(--line);display:flex;gap:12px}
+.box>h3 .sp{flex:1}
+#tx{flex:1;overflow:auto;padding:16px 22px;display:flex;flex-direction:column;gap:14px;scroll-behavior:smooth}
+.t{max-width:88%;padding:12px 18px;border-radius:18px;font-size:30px;line-height:1.3}
+.t small{display:block;font-size:14px;letter-spacing:1px;text-transform:uppercase;opacity:.7;margin-bottom:2px}
+.t.agent{align-self:flex-start;background:#1c2b4d;border-top-left-radius:4px}
+.t.customer{align-self:flex-end;background:#1d3a2c;border-top-right-radius:4px}
+.empty{color:var(--mute);padding:30px;text-align:center;font-size:24px}
+#side{display:flex;flex-direction:column;gap:14px;min-height:0}
+#moves{padding:12px 20px;display:flex;flex-direction:column;gap:12px}
+.mv .n{display:flex;justify-content:space-between;gap:10px;font-size:23px}
+.mv .bar{height:16px;background:#1b2538;border-radius:8px;overflow:hidden;margin-top:4px}
+.mv .bar i{display:block;height:100%;background:#4c5d82;border-radius:8px;transition:width .6s}
+.mv.pick .n{color:var(--acc);font-weight:700}.mv.pick .bar i{background:var(--acc)}
+.sit{font-size:16px;color:var(--mute)}
+#numbers{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.num{padding:14px 20px}
+.num .v{font-size:64px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+.num .l{font-size:15px;color:var(--mute);letter-spacing:1px;text-transform:uppercase;margin-top:4px}
+#eur .v{color:var(--ok)}
+#lanes{padding:12px 20px}
+.lane{display:flex;align-items:center;gap:12px;font-size:22px;margin:4px 0}
+.lane .c{min-width:60px;text-align:right;font-weight:800;font-size:30px;font-variant-numeric:tabular-nums}
+.lane i{width:14px;height:14px;border-radius:3px;flex:none}
+#qrbox{padding:12px 20px;display:flex;gap:16px;align-items:center}
+#qrbox img{width:150px;height:150px;background:#fff;border-radius:10px;padding:6px}
+#qrbox .u{font-size:18px;color:var(--mute);word-break:break-all}
+#qrbox .h{font-size:24px;font-weight:700}
+#feed{flex:none;border-top:1px solid var(--line);padding:6px 28px;font-size:15px;color:var(--mute);display:flex;gap:18px;overflow:hidden;white-space:nowrap;height:36px;align-items:center}
+#feed span.a{color:var(--ok)}#feed span.d{color:var(--bad);font-weight:700}#feed span.e{color:var(--warn);font-weight:700}
+/* banners */
+#banners{position:fixed;left:0;right:0;top:130px;z-index:10;display:flex;flex-direction:column;gap:10px;align-items:center;pointer-events:none}
+.bn{width:min(1200px,92%);border-radius:18px;padding:18px 30px;display:flex;align-items:center;gap:26px;box-shadow:0 14px 50px rgba(0,0,0,.6);animation:in .25s ease-out}
+.bn .w{font-size:64px;font-weight:900;letter-spacing:2px}
+.bn .d{font-size:28px;line-height:1.25;flex:1}
+.bn .d small{display:block;font-size:18px;opacity:.85}
+.bn.DENIED,.bn.BLOCKED{background:#b3201f;color:#fff}.bn.CORRECTED{background:#d99100;color:#1c1400}.bn.HANDED{background:#6b3fd4;color:#fff}
+.bn.out{opacity:0;transform:translateY(-14px);transition:all .5s}
+@keyframes in{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
+#wired{display:none;position:fixed;bottom:44px;left:28px;background:#3b2a05;color:var(--warn);border:1px solid #6b4a0b;padding:6px 14px;border-radius:8px;font-size:14px;z-index:5}
+</style>
+</head>
+<body>
+<div id="top">
+  <span class="brand">Prova</span><span class="co" id="co" style="white-space:nowrap"></span>
+  <span id="conn" style="color:var(--mute);font-size:15px"></span>
+  <span id="facts" style="color:var(--mute);font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0"></span>
+  <nav><a href="/">Dashboard</a><a href="/ui/playbook.html">Playbook</a><a href="/ui/lab.html">Sandbox</a><a href="/ui/index.html#s7" class="cur">Live calls</a><a href="http://127.0.0.1:8799/ui/index.html#s7" target="_blank" rel="noopener" title="Finished showcase run: calls, rehearsals, results">Demo</a></nav>
+</div>
+<div id="stages">
+  <div class="st" id="st-reh"><span class="dot"></span><div>Rehearsing <span id="rehn">×3</span><small id="rehs">waiting</small></div></div>
+  <div class="st" id="st-call"><span class="dot"></span><div>Calling<small id="calls">waiting</small></div></div>
+  <div class="st" id="st-conf"><span class="dot"></span><div>Confirmed<small id="confs">waiting</small></div></div>
+</div>
+<div id="main">
+  <section class="box">
+    <h3>Live call <span class="sp"></span><span id="who"></span></h3>
+    <div id="tx"><div class="empty">Waiting for a call</div></div>
+  </section>
+  <div id="side">
+    <section class="box"><h3>Top 3 moves <span class="sp"></span><span id="mms" style="text-transform:none;letter-spacing:0"></span></h3>
+      <div id="moves"><div class="empty" style="font-size:18px;padding:12px">Moves appear when the customer speaks</div></div></section>
+    <div id="numbers">
+      <section class="box num" id="eur"><div class="v" id="eurv">0</div><div class="l">EUR renewed</div></section>
+      <section class="box num"><div class="v" id="wonv">0</div><div class="l">confirmed renewals</div></section>
+    </div>
+    <section class="box" id="lanes"></section>
+    <section class="box" id="qrbox"><img id="qr" alt="QR to join"><div><div class="h">Scan to join</div><div class="u" id="joinurl"></div></div></section>
+  </div>
+</div>
+<div id="feed"><span>Agent Monitor</span></div>
+<div id="banners"></div>
+<div id="wired"></div>
+
+<script>
+"use strict";
+const $ = s => document.querySelector(s);
+const esc = v => String(v == null ? "" : v).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const pj = v => { if (typeof v === "string") { try { return JSON.parse(v); } catch (e) { return v; } } return v; };
+const arr = v => Array.isArray(v) ? v : (v && typeof v === "object" ? Object.values(v) : []);
+const unwired = new Set();
+async function get(path) {
+  try {
+    const r = await fetch(path);
+    if (r.status === 404) { unwired.add("GET " + path.split("?")[0]); wired(); return null; }
+    unwired.delete("GET " + path.split("?")[0]); wired();
+    return r.ok ? await r.json() : null;
+  } catch (e) { return null; }
+}
+function wired() { const el = $("#wired"); el.style.display = unwired.size ? "block" : "none"; el.textContent = "Not wired yet: " + [...unwired].join(", "); }
+
+const S = { reh: new Set(), rehDone: false, calling: false, confirmed: false, lastId: 0, callId: null, won: 0 };
+function stages() {
+  const set = (id, cls, sub) => { const e = $(id); e.className = "st " + cls; if (sub != null) e.querySelector("small").textContent = sub; };
+  const n = Math.min(S.reh.size, 3);
+  if (S.confirmed) set("#st-reh", "done", "done"); else if (S.calling) set("#st-reh", "done", "done");
+  else if (S.rehDone) set("#st-reh", "done", "done");
+  else if (n) set("#st-reh", "on", n + " of 3 done"); else set("#st-reh", "", "waiting");
+  if (S.confirmed) set("#st-call", "done", "call ended");
+  else if (S.calling) set("#st-call", "on", "on the line"); else set("#st-call", "", "waiting");
+  set("#st-conf", S.confirmed ? "done" : (S.calling === "ended" ? "on" : ""), S.confirmed ? "customer tapped confirm" : (S.calling === "ended" ? "waiting for the customer's tap" : "waiting"));
+}
+
+/* ---- transcript */
+function addTurn(role, text) {
+  if (role !== "agent" && role !== "customer") return;
+  const tx = $("#tx"); if (tx.querySelector(".empty")) tx.innerHTML = "";
+  const d = document.createElement("div"); d.className = "t " + role;
+  d.innerHTML = `<small>${role === "agent" ? "Prova (AI)" : "Customer"}</small>${esc(text)}`;
+  tx.appendChild(d); tx.scrollTop = tx.scrollHeight;
+  while (tx.children.length > 40) tx.removeChild(tx.firstChild);
+}
+/* ---- moves */
+function showMoves(p) {
+  const c = arr(p.candidates).slice().sort((a, b) => (b.score || 0) - (a.score || 0)).slice(0, 3);
+  if (!c.length) return;
+  const ch = p.chosen || c[0], max = Math.max(...c.map(x => x.score || 0), 0.0001);
+  $("#moves").innerHTML = `<div class="sit">${esc(p.situation || "")}</div>` + c.map(x => {
+    const pick = (ch.card_id != null && x.card_id === ch.card_id) || x.move === ch.move;
+    return `<div class="mv ${pick ? "pick" : ""}"><div class="n"><span>${esc(x.move || x.name || "")}</span><span>${Math.round((x.score || 0) * 100)}%</span></div><div class="bar"><i style="width:${Math.round((x.score || 0) / max * 100)}%"></i></div></div>`;
+  }).join("");
+  $("#mms").textContent = p.ms != null ? p.ms + " ms" : "";
+}
+/* ---- banners */
+function banner(word, cls, text, sub) {
+  const b = document.createElement("div"); b.className = "bn " + cls;
+  b.innerHTML = `<div class="w">${esc(word)}</div><div class="d">${esc(text)}${sub ? `<small>${esc(sub)}</small>` : ""}</div>`;
+  const box = $("#banners"); box.prepend(b);
+  while (box.children.length > 3) box.removeChild(box.lastChild);
+  setTimeout(() => { b.classList.add("out"); setTimeout(() => b.remove(), 600); }, 7000);
+}
+/* ---- feed (agent actions) */
+const feed = [];
+let showTest = false;
+const isTest = a => /eval-guard|eval-setup-attack|setup attack test/.test(String(a || ""));
+function feedHtml() { return '<span>Agent Monitor</span>' + feed.join("") + `<label style="margin-left:auto"><input type="checkbox" id="showtest" ${showTest ? "checked" : ""}> show test traffic</label>`; }
+function drawFeed() { $("#feed").innerHTML = feedHtml(); const cb = $("#showtest"); if (cb) cb.onchange = () => { showTest = cb.checked; }; }
+function feedArgs(p) {
+  const a = p.args;
+  let t = "";
+  if (a && typeof a === "object") {
+    if (p.rule === "injection_quarantined" && (a.doc || a.preview)) t = (a.doc || "") + (a.preview ? ": " + a.preview : "");
+    else { try { t = JSON.stringify(a); } catch (e) { t = ""; } }
+  } else if (a) t = String(a);
+  t = t || p.args_digest || "";
+  return t.length > 100 ? t.slice(0, 99) + "…" : t;
+}
+function pushFeed(p) {
+  const dec = p.decision || (p.allowed === false ? "deny" : "allow");
+  feed.unshift(`<span class="${dec === "allow" ? "a" : dec === "deny" ? "d" : "e"}">${esc(dec.toUpperCase())} ${esc(p.tool || p.name || "")}${p.rule ? " (" + esc(p.rule) + ")" : ""}${feedArgs(p) ? " " + esc(feedArgs(p)) : ""}</span>`);
+  if (feed.length > 8) feed.length = 8;
+  drawFeed();
+}
+/* ---- events */
+function handle(ev) {
+  if (!ev || !ev.type) return;
+  if (ev.id != null) { if (ev.id <= S.lastId) return; S.lastId = ev.id; }
+  const p = pj(ev.payload) || {};
+  switch (ev.type) {
+    case "warmup":
+      if (S.confirmed || S.calling === "ended") { S.reh = new Set(); S.rehDone = false; S.calling = false; S.confirmed = false; }
+      if (p.brief) S.rehDone = true; else S.reh.add(p.sim_call_id != null ? p.sim_call_id : S.reh.size + 1);
+      stages(); break;
+    case "call_started":
+      if (p.mode === "sim") break;
+      S.calling = true; S.confirmed = false; S.callId = ev.call_id; $("#tx").innerHTML = '<div class="empty">Connected</div>';
+      $("#moves").innerHTML = ""; $("#who").textContent = p.purpose || ""; stages(); break;
+    case "turn": addTurn(p.role, p.text); break;
+    case "moves": showMoves(p); break;
+    case "tool":
+      if (p.allowed === false) banner("DENIED", "DENIED", `${p.name}: ${(p.result && p.result.error) || p.rule || "not allowed"}`, p.rule ? "rule " + p.rule : "");
+      break;
+    case "dial_check":
+      if (p.allow === false || p.allowed === false) banner("BLOCKED", "BLOCKED", "Call not allowed: " + (p.reason || p.rule || ""), p.rule ? "rule " + p.rule : "");
+      break;
+    case "correction": banner("CORRECTED", "CORRECTED", `Said: “${p.said || ""}”`, "Correct: " + (p.correct || p.rule || "")); break;
+    case "guard":
+      if (p.action === "handoff") banner("HANDED OFF", "HANDED", p.reason || "Passed to a human", p.rule ? "rule " + p.rule : "");
+      else banner("BLOCKED", "BLOCKED", p.reason || p.action || "", p.rule ? "rule " + p.rule : ""); break;
+    case "handoff": banner("HANDED OFF", "HANDED", p.reason || "Passed to a human"); break;
+    case "agent_action": {
+      if (isTest(p.actor) && !showTest) break;     // certification traffic (guard benchmark, setup attack tests)
+      pushFeed(p);
+      const dec = p.decision || (p.allowed === false ? "deny" : "allow");
+      if (dec === "deny") banner("BLOCKED", "BLOCKED", `${p.tool || p.name || "agent action"}: ${p.hint || p.reason || "denied by the guard"}`, [p.rule && "rule " + p.rule, p.risk != null && "risk " + Number(p.risk).toFixed(2)].filter(Boolean).join(" · "));
+      break; }
+    case "call_ended":
+      if (ev.call_id === S.callId || S.calling === true) { S.calling = "ended"; stages(); }
+      later(loadNumbers, 800); break;
+    case "confirmation":
+      if (p.status === "confirmed") { S.confirmed = true; stages(); later(loadNumbers, 600); } break;
+    case "consent": later(loadLanes, 500); break;
+  }
+}
+const tm = {}; function later(fn, ms) { clearTimeout(tm[fn.name]); tm[fn.name] = setTimeout(fn, ms); }
+let es, fails = 0, poll;
+function stream() {
+  es = new EventSource("/api/events/stream");
+  es.onopen = () => { fails = 0; $("#conn").textContent = "live"; if (poll) { clearInterval(poll); poll = null; } };
+  const on = m => { try { handle(JSON.parse(m.data)); } catch (e) {} };
+  es.onmessage = on; es.addEventListener("event", on);
+  es.onerror = () => { fails++; $("#conn").textContent = "reconnecting"; if (fails >= 2) { try { es.close(); } catch (e) {} if (!poll) poll = setInterval(async () => { const r = await get("/api/events?after=" + S.lastId); arr(r).forEach(handle); }, 1500); } };
+}
+/* ---- numbers, lanes */
+async function loadNumbers() {
+  const r = await get("/api/report"); if (!r) return;
+  $("#co").textContent = r.company || "";
+  $("#eurv").textContent = Math.round(r.value_won_eur || 0).toLocaleString("en");
+  const conf = (r.confirmations && r.confirmations.confirmed) || (r.progress && r.progress.confirmed) || 0;
+  $("#wonv").textContent = conf;
+  const cs = r.calls || {}, bo = cs.by_outcome || {}, pb = (r.playbook || {}).proven || {}, ch = r.chain || {};
+  const parts = [];
+  if (cs.total != null) parts.push(`<b style="color:var(--text)">${esc(cs.total)}</b> calls`);
+  if (r.corrections != null) parts.push(`<b style="color:var(--text)">${esc(r.corrections)}</b> corrections`);
+  if (pb.cards != null) parts.push(`<b style="color:var(--text)">${esc(pb.cards)}</b> playbook cards`);
+  if (ch.count != null) parts.push(`audit chain <b style="color:${ch.ok ? "var(--ok)" : "var(--bad)"}">${ch.ok ? "intact" : "BROKEN"}</b>`);
+  $("#facts").innerHTML = parts.join(" · ");
+}
+async function seedFeed() {
+  const evs = await get("/api/events?after=0"); if (!Array.isArray(evs)) return;
+  const acts = evs.filter(e => e.type === "agent_action").map(e => pj(e.payload) || {}).filter(p => !isTest(p.actor));
+  for (const p of acts.slice(-8)) pushFeed(p);
+}
+const LN = [["ai_call", "AI call", "#33d17a"], ["consent_request", "Consent request", "#5b8dff"], ["human_call", "Human call", "#ffb020"], ["hold", "Hold", "#8d9ab3"]];
+async function loadLanes() {
+  const r = await get("/api/lanes"); const src = r && (r.lanes || r.counts || r.summary || r);
+  $("#lanes").innerHTML = LN.map(([k, n, c]) => {
+    const v = src && src[k]; const cnt = v == null ? "-" : (typeof v === "object" ? (v.count ?? v.n ?? v.customers ?? 0) : v);
+    return `<div class="lane"><i style="background:${c}"></i><span class="c">${esc(cnt)}</span><span>${n}</span></div>`;
+  }).join("");
+}
+/* QR to /join: GET /api/qr.svg?path=/join (server draws it with the public base URL); fallback = the URL as text */
+function qr() {
+  const url = location.origin + "/join";
+  $("#joinurl").textContent = url;
+  const img = $("#qr"); img.onerror = () => { img.style.display = "none"; };
+  img.src = "/api/qr.svg?path=" + encodeURIComponent("/join");
+}
+stages(); drawFeed(); loadNumbers(); loadLanes(); qr(); stream(); seedFeed();
+setInterval(() => { loadNumbers(); loadLanes(); }, 8000);
+</script>
+</body>
+</html>

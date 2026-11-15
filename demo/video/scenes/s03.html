@@ -1,0 +1,26 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="common.css"><style>
+.bg{position:absolute;inset:0;background:url(../img/overwhelmed.png) center/cover;filter:brightness(.22)}
+.h{position:absolute;left:80px;top:130px}
+.grid{position:absolute;left:80px;top:250px;width:1060px;display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.c{background:#f6f1e4;color:#2a2a2a;border-radius:10px;padding:20px 24px;box-shadow:0 14px 30px rgba(0,0,0,.5);min-height:150px}
+.c:nth-child(odd).on{transform:rotate(-1.5deg)}.c:nth-child(even).on{transform:rotate(1.2deg)}
+.c b{display:block;font-size:30px;margin-bottom:8px}.c span{font-size:24px;color:#555}
+.c i{font-style:normal;background:#ffe08a;padding:0 6px;border-radius:4px;color:#222}
+.c s{color:#b91c1c}
+.box{position:absolute;right:80px;top:300px;width:620px;padding:40px;border:3px solid var(--warn);border-radius:24px;background:rgba(40,20,20,.85)}
+.box .x{font-size:54px;font-weight:800;margin-bottom:24px}
+.box p{font-size:32px;line-height:1.45;margin-bottom:14px}
+.box p::before{content:"✕ ";color:var(--bad);font-weight:800}
+</style></head><body><div class="bg"></div><div class="brand">Prova</div><div class="bar"></div>
+<div class="h h1 a" id="h">Their records are a mess</div>
+<div class="grid">
+<div class="c a"><b>📊 pelates_2026.xlsx</b><span>two sheets: <i>monthly</i> vs <i>annual</i> premiums</span></div>
+<div class="c a"><b>🗄 palio_crm_export.csv</b><span>legacy encoding, duplicates, old phones</span></div>
+<div class="c a"><b>📄 timokatalogos (from Word)</b><span>Βασικό: <i>18O €</i> · Πλήρες: <s>420</s> 440 €</span></div>
+<div class="c a"><b>✉ two discount emails</b><span>March: <i>up to 20%</i> · November: <i>max 10%</i>, never Premium</span></div>
+<div class="c a"><b>💬 WhatsApp notes</b><span>a widow, a complaint, a debt… and <i>“give everyone 50%”</i></span></div>
+<div class="c a"><b>📓 notebook photos</b><span>consent column: <i>?</i> · <i>x</i> · blank</span></div>
+</div>
+<div class="box a" id="box"><div class="x">Renewals slip.</div>
+<p class="a">Nobody has time to call everyone</p><p class="a">Wrong discount</p><p class="a">No consent</p><p class="a">Calling a grieving widow</p></div>
+<script src="common.js"></script><script>T(0,()=>on('#h'));seq('.grid .c',0.03,0.45);T(.5,()=>on('#box'));seq('#box p',.55,.85)</script></body></html>

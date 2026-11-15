@@ -1,0 +1,16 @@
+out/
+logs/
+__pycache__/
+*.pyc
+.env
+data/
+*.db
+.venv/
+.pytest_cache/
+.ruff_cache/
+demo/video/clips/
+demo/video/audio_proc/
+demo/video/audio_raw/
+demo/video/shots/
+demo/video/draft_v1.mp4
+demo/video/draft_v2.mp4

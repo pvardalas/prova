@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f6f5f2">
+<title>Demo Phone</title>
+<style>
+  :root { --bg:#f6f5f2; --ink:#1d1d1b; --mut:#6d6b66; --line:#e3e1db; --green:#1f9d55; --red:#d64541; --card:#fff; }
+  * { box-sizing:border-box; }
+  html,body { margin:0; height:100%; background:var(--bg); color:var(--ink);
+    font:16px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
+  main { min-height:100%; display:flex; flex-direction:column; align-items:center; justify-content:space-between;
+    padding:max(28px,env(safe-area-inset-top)) 16px max(28px,env(safe-area-inset-bottom)); text-align:center; }
+  .top { margin-top:6vh; }
+  .status { color:var(--mut); font-size:15px; letter-spacing:.02em; }
+  .who { font-size:32px; font-weight:600; margin:10px 0 4px; }
+  .sub { color:var(--mut); font-size:15px; }
+  .avatar { width:96px; height:96px; border-radius:50%; background:#e9e6df; margin:0 auto 18px; display:grid; place-items:center;
+    font-size:34px; font-weight:600; color:#8a857a; }
+  .ringing .avatar { animation:pulse 1.2s ease-in-out infinite; }
+  @keyframes pulse { 50% { box-shadow:0 0 0 18px rgba(31,157,85,.12); } }
+  .caps { width:100%; max-width:440px; flex:1; overflow-y:auto; margin:24px 0; display:flex; flex-direction:column; gap:8px; text-align:left; }
+  .cap { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:9px 12px; font-size:15px; max-width:85%; }
+  .cap.agent { align-self:flex-start; }
+  .cap.customer { align-self:flex-end; background:#eef6f1; border-color:#d5eadc; }
+  .cap small { display:block; color:var(--mut); font-size:12px; margin-bottom:2px; }
+  .btns { display:flex; gap:56px; justify-content:center; }
+  .round { width:72px; height:72px; border-radius:50%; border:0; color:#fff; font-size:15px; font-weight:600; cursor:pointer; }
+  .round svg { width:30px; height:30px; fill:#fff; }
+  .lbl { color:var(--mut); font-size:13px; margin-top:8px; }
+  .g { background:var(--green); } .r { background:var(--red); }
+  .start { background:var(--ink); color:#fff; border:0; border-radius:999px; padding:16px 28px; font-size:17px; font-weight:600; }
+  .hint { color:var(--mut); font-size:14px; max-width:320px; margin:14px auto 0; }
+  [hidden] { display:none !important; }
+</style>
+</head>
+<body>
+<main id="app">
+  <div class="top">
+    <div class="avatar" id="av">H</div>
+    <div class="status" id="status">Demo phone</div>
+    <div class="who" id="who">Helios Mobile</div>
+    <div class="sub" id="sub">Tap below to put this phone on standby</div>
+  </div>
+  <div class="caps" id="caps"></div>
+  <div>
+    <div id="s-idle"><button class="start" id="b-start">Turn on demo phone</button>
+      <p class="hint">Allow the microphone. Keep this page open; the AI agent will ring it.</p></div>
+    <div id="s-ring" class="btns" hidden>
+      <div><button class="round r" id="b-decline" aria-label="Decline"><svg viewBox="0 0 24 24"><path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .4-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08a.996.996 0 0 1 0-1.41C3.34 8.78 7.46 7 12 7s8.66 1.78 11.71 4.67c.38.38.38 1.02 0 1.41l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.11-.7-.28-.79-.74-1.69-1.36-2.67-1.85-.33-.16-.56-.5-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/></svg></button><div class="lbl">Decline</div></div>
+      <div><button class="round g" id="b-answer" aria-label="Answer"><svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1l-2.3 2.2z"/></svg></button><div class="lbl">Answer</div></div>
+    </div>
+    <div id="s-call" class="btns" hidden>
+      <div><button class="round r" id="b-hang" aria-label="Hang up"><svg viewBox="0 0 24 24"><path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .4-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08a.996.996 0 0 1 0-1.41C3.34 8.78 7.46 7 12 7s8.66 1.78 11.71 4.67c.38.38.38 1.02 0 1.41l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.11-.7-.28-.79-.74-1.69-1.36-2.67-1.85-.33-.16-.56-.5-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/></svg></button><div class="lbl">Hang up</div></div>
+    </div>
+  </div>
+</main>
+<script>
+const $ = s => document.querySelector(s);
+const token = new URLSearchParams(location.search).get("k") || "";
+let ws, ctx, mic, node, ringer, timer, t0, wake, state = "off";
+let playAt = 0, sources = [];
+let buf = [], ratio = 1;
+
+function show(which) { for (const s of ["idle", "ring", "call"]) $("#s-" + s).hidden = s !== which; }
+function setText(status, who, sub) { $("#status").textContent = status; if (who != null) $("#who").textContent = who; if (sub != null) $("#sub").textContent = sub; }
+
+async function start() {
+  try {
+    mic = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true, channelCount: 1 } });
+  } catch (e) { setText("Microphone blocked", null, "Allow the microphone in your browser settings and reload."); return; }
+  ctx = new (window.AudioContext || window.webkitAudioContext)();
+  await ctx.resume();
+  ratio = ctx.sampleRate / 16000;
+  const code = `class Tap extends AudioWorkletProcessor { process(i) { if (i[0] && i[0][0]) this.port.postMessage(i[0][0].slice(0)); return true; } }
+                registerProcessor("tap", Tap);`;
+  await ctx.audioWorklet.addModule(URL.createObjectURL(new Blob([code], { type: "application/javascript" })));
+  node = new AudioWorkletNode(ctx, "tap");
+  node.port.onmessage = e => { if (state === "call") pushMic(e.data); };
+  const src = ctx.createMediaStreamSource(mic);
+  const sink = ctx.createGain(); sink.gain.value = 0;   // keep the graph pulling without echoing the mic
+  src.connect(node); node.connect(sink); sink.connect(ctx.destination);
+  try { wake = await navigator.wakeLock?.request("screen"); } catch (e) {}
+  connect();
+}
+
+function connect() {
+  ws = new WebSocket((location.protocol === "https:" ? "wss://" : "ws://") + location.host + "/api/phone/ws?k=" + encodeURIComponent(token));
+  ws.binaryType = "arraybuffer";
+  ws.onopen = () => { if (state !== "call") standby(); };
+  ws.onclose = () => { if (state === "call") ended("Call dropped"); setText("Reconnecting...", null, ""); setTimeout(connect, 1500); };
+  ws.onmessage = e => {
+    if (typeof e.data !== "string") return play(e.data);
+    const m = JSON.parse(e.data);
+    if (m.type === "ring") ring(m);
+    else if (m.type === "connected") inCall();
+    else if (m.type === "clear") stopPlayback();
+    else if (m.type === "caption") caption(m.role, m.text);
+    else if (m.type === "ended") ended(m.outcome === "no_answer" ? "Missed call" : "Call ended");
+  };
+}
+
+function standby() {
+  state = "standby"; show("idle"); $("#b-start").hidden = true; $("#app").classList.remove("ringing");
+  setText("On standby", "Helios Mobile", "Waiting for the agent to call");
+  $(".hint").textContent = "Keep this page open with the screen on.";
+}
+
+function ring(m) {
+  state = "ring"; $("#caps").innerHTML = ""; show("ring"); $("#app").classList.add("ringing");
+  setText("Incoming call", m.caller || "Helios Mobile", "Calling about " + (m.customer || "your contract"));
+  ringer = startRinger();
+  if (navigator.vibrate) navigator.vibrate([800, 400, 800, 400, 800, 400, 800, 400, 800]);
+}
+
+function startRinger() {
+  let on = true;
+  const beep = () => {
+    if (!on) return;
+    const g = ctx.createGain(); g.gain.value = 0.18; g.connect(ctx.destination);
+    for (const f of [440, 480]) { const o = ctx.createOscillator(); o.frequency.value = f; o.connect(g); o.start(); o.stop(ctx.currentTime + 1.6); }
+  };
+  beep(); const id = setInterval(beep, 3200);
+  return () => { on = false; clearInterval(id); if (navigator.vibrate) navigator.vibrate(0); };
+}
+
+function answer(ok) {
+  if (ringer) { ringer(); ringer = null; }
+  $("#app").classList.remove("ringing");
+  ws.send(JSON.stringify({ type: ok ? "answer" : "decline" }));
+  if (ok) { setText("Connecting...", null, ""); show("call"); }
+}
+
+function inCall() {
+  state = "call"; show("call"); playAt = 0; t0 = Date.now();
+  timer = setInterval(() => { const s = Math.floor((Date.now() - t0) / 1000); setText(`${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`); }, 500);
+  setText("0:00", null, "Nova, AI assistant");
+}
+
+function ended(why) {
+  if (ringer) { ringer(); ringer = null; }
+  clearInterval(timer); stopPlayback(); buf = [];
+  state = "standby"; show("idle"); $("#app").classList.remove("ringing");
+  setText(why, null, "Back on standby in a moment");
+  setTimeout(() => { if (state === "standby") standby(); }, 4000);
+}
+
+function hangup() { if (ws && ws.readyState === 1) ws.send(JSON.stringify({ type: "hangup" })); }
+
+// mic: float at ctx rate -> 16 kHz int16, sent every ~40 ms
+function pushMic(f32) {
+  for (const v of f32) buf.push(v);
+  const need = Math.floor(640 * ratio);
+  while (buf.length >= need) {
+    const chunk = buf.splice(0, need), out = new Int16Array(640);
+    for (let i = 0; i < 640; i++) {
+      const p = i * ratio, j = Math.floor(p), fr = p - j, a = chunk[j] || 0, b = chunk[j + 1] ?? a;
+      out[i] = Math.max(-1, Math.min(1, a + (b - a) * fr)) * 32767;
+    }
+    if (ws.readyState === 1) ws.send(out.buffer);
+  }
+}
+
+// agent: 24 kHz int16 chunks, scheduled back to back
+function play(ab) {
+  const i16 = new Int16Array(ab), n = i16.length; if (!n) return;
+  const b = ctx.createBuffer(1, n, 24000), ch = b.getChannelData(0);
+  for (let i = 0; i < n; i++) ch[i] = i16[i] / 32768;
+  const s = ctx.createBufferSource(); s.buffer = b; s.connect(ctx.destination);
+  playAt = Math.max(playAt, ctx.currentTime + 0.06); s.start(playAt); playAt += b.duration;
+  sources.push(s); s.onended = () => { sources = sources.filter(x => x !== s); };
+}
+function stopPlayback() { for (const s of sources) { try { s.stop(); } catch (e) {} } sources = []; playAt = 0; }
+
+function caption(role, text) {
+  const d = document.createElement("div"); d.className = "cap " + role;
+  d.innerHTML = `<small>${role === "agent" ? "Nova (AI)" : "You"}</small>`; d.append(text);
+  $("#caps").append(d); d.scrollIntoView({ block: "end", behavior: "smooth" });
+}
+
+$("#b-start").onclick = start;
+$("#b-answer").onclick = () => answer(true);
+$("#b-decline").onclick = () => answer(false);
+$("#b-hang").onclick = hangup;
+document.addEventListener("visibilitychange", async () => { if (!document.hidden && wake) { try { wake = await navigator.wakeLock.request("screen"); } catch (e) {} } });
+if (!token) setText("Missing link token", null, "Open the full link shown on the supervisor screen.");
+</script>
+</body>
+</html>

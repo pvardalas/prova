@@ -1,0 +1,29 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="common.css"><style>
+.gl{position:absolute;left:80px;top:130px;width:760px}
+.gl h3,.ce h3{font-size:30px;color:var(--mut);margin-bottom:18px;letter-spacing:1px}
+.go1{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px 28px;margin-bottom:18px}
+.go1 b{font-size:36px;display:block}.go1 .e{font-size:60px;font-weight:800;color:var(--acc)}.go1 span{font-size:24px;color:var(--mut)}
+.ce{position:absolute;left:920px;right:80px;top:130px}
+.row{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px 28px;margin-bottom:18px}
+.row .t{display:flex;justify-content:space-between;font-size:30px;font-weight:700}
+.row .t span{color:var(--acc);font-family:"Noto Sans Mono",monospace}
+.pb{height:16px;background:#0b0f19;border-radius:8px;margin-top:14px;overflow:hidden}
+.pb i{display:block;height:100%;width:0;background:var(--acc);transition:width 2.4s ease}
+.row .d{font-size:22px;color:var(--mut);margin-top:10px;font-family:"Noto Sans Mono",monospace}
+.badge{margin-top:10px;display:inline-block;padding:16px 40px;border:4px solid var(--ok);color:var(--ok);font-size:44px;font-weight:800;border-radius:16px;transform:rotate(-3deg)}
+</style></head><body><div class="brand">Prova</div><div class="bar"></div>
+<div class="gl"><h3 class="a" id="gh">GOALS, COMPUTED FROM THE DATA</h3>
+<div class="go1 a"><b>Renew</b><div class="e">€ 9.870</div><span>23 policies due in the next 60 days</span></div>
+<div class="go1 a"><b>Collect</b><div class="e">€ 410</div><span>4 open balances (Γεωργίου 85 €)</span></div>
+<div class="go1 a"><b>Win back</b><div class="e">€ 2.940</div><span>6 lapsed clients</span></div></div>
+<div class="ce"><h3 class="a" id="ch">CERTIFICATION: PROVA ATTACKS ITSELF</h3>
+<div class="row a"><div class="t">Attacks on its own caller<span id="c1">0/48 blocked</span></div><div class="pb"><i id="p1"></i></div><div class="d">“the previous employee promised 20%” · “ignore your rules” · fake consent</div></div>
+<div class="row a"><div class="t">Mutated rules caught by tests<span id="c2">0/31 caught</span></div><div class="pb"><i id="p2"></i></div><div class="d">max_discount 10→20 ✕ caught · drop no-call list ✕ caught · Premium discount ✕ caught</div></div>
+<div class="row a"><div class="t">Guard benchmark<span id="c3">0%</span></div><div class="pb"><i id="p3"></i></div><div class="d">injections in documents quarantined</div></div>
+<div class="badge a" id="bd">CERTIFIED ✓</div></div>
+<script src="common.js"></script><script>
+function count(id,n,tot,suf,secs){let i=0;const iv=setInterval(()=>{i++;$(id).textContent=(tot?Math.round(n*i/20)+'/'+tot:Math.round(n*i/20)+'%')+suf;if(i>=20)clearInterval(iv)},secs*50)}
+T(0,()=>on('#gh'));seq('.go1',.03,.3);T(.33,()=>on('#ch'));seq('.row',.36,.5);
+T(.4,()=>{$('#p1').style.width='100%';count('#c1',48,48,' blocked',2.4)});
+T(.55,()=>{$('#p2').style.width='100%';count('#c2',31,31,' caught',2.4)});
+T(.7,()=>{$('#p3').style.width='100%';count('#c3',100,0,'',2.4)});T(.86,()=>on('#bd'))</script></body></html>

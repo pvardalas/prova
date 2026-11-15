@@ -1,0 +1,18 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="common.css"><style>
+.h{position:absolute;left:80px;top:140px}
+.list{position:absolute;left:60px;right:60px;top:280px}
+.it{display:flex;gap:40px;align-items:flex-start;padding:22px 40px;border-radius:22px;margin-bottom:16px;border:3px solid transparent;opacity:.32;transition:all .6s}
+.it.hl{opacity:1;background:#18243a;border-color:var(--acc);transform:scale(1.015)}
+.it .n{font-size:56px;font-weight:800;color:var(--acc);width:50px}
+.it b{display:block;font-size:44px}.it span{font-size:31px;color:var(--mut)}
+</style></head><body><div class="brand">Prova</div><div class="bar"></div>
+<div class="h h1">With one more week</div>
+<div class="list">
+<div class="it"><div class="n">1</div><div><b>Real phone calls, end to end</b><span>Twilio / browser phone in Greek, Gemini Live voice, live consent capture</span></div></div>
+<div class="it"><div class="n">2</div><div><b>Hosted, with proper OAuth</b><span>a stable deployment any agency's agent can connect to, not a laptop tunnel</span></div></div>
+<div class="it"><div class="n">3</div><div><b>Legal pack reviewed by Greek counsel</b><span>GDPR, telemarketing rules, opt-out register; then more countries and languages</span></div></div>
+<div class="it"><div class="n">4</div><div><b>Direct integrations</b><span>insurer quote APIs and the agency CRM: renewals and prices in sync</span></div></div>
+<div class="it"><div class="n">5</div><div><b>Pilot with 2–3 real agencies</b><span>measure renewal lift and hours saved; owner mobile app for approvals</span></div></div>
+</div>
+<script src="common.js"></script><script>const hl=parseInt(Q.get('hl')||'0');const its=$$('.it');
+if(hl>0)its[hl-1].classList.add('hl');T(.05,()=>{its.forEach(e=>e.classList.remove('hl'));its[hl].classList.add('hl')})</script></body></html>

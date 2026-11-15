@@ -1,0 +1,28 @@
+[
+  {
+    "name": "insurance",
+    "title": "Ασφάλειες Παπαδάκης (car-insurance broker, renewals)",
+    "website": "https://papadakis-asfalies.example",
+    "data": "samples/insurance/pelates.xlsx",
+    "docs": [
+      "samples/insurance/timokatalogos.md",
+      "samples/insurance/oroi.md",
+      "samples/insurance/site.md"
+    ],
+    "goal": "Θέλω να ανανεώσω τα συμβόλαια αυτοκινήτου που λήγουν τις επόμενες 45 ημέρες, χωρίς να ξεπεράσω τα όρια έκπτωσης του γραφείου.",
+    "goal_en": "Renew the car-insurance policies that expire in the next 45 days, within the office's discount limits."
+  },
+  {
+    "name": "gym",
+    "title": "FitLife Χαλάνδρι (gym, win back lapsed members)",
+    "website": "https://fitlife-chalandri.example",
+    "data": "samples/gym/members.csv",
+    "docs": [
+      "samples/gym/timokatalogos.md",
+      "samples/gym/oroi.md",
+      "samples/gym/site.md"
+    ],
+    "goal": "Θέλω να φέρω πίσω μέλη που έχουν σταματήσει να έρχονται και να τους προτείνω επανεγγραφή, χωρίς πίεση.",
+    "goal_en": "Win back members who stopped coming and offer them to re-join, without pressure."
+  }
+]

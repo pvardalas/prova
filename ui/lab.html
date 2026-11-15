@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prova Lab</title>
+<style>
+:root{
+  --bg:#f5f6f8; --panel:#fff; --line:#e1e4ea; --line2:#eef0f4; --text:#1c2230; --mute:#677086;
+  --acc:#2458c6; --acc-bg:#e8effc; --ok:#1c8a4e; --ok-bg:#e3f4ea; --bad:#c62f2f; --bad-bg:#fbe7e7;
+  --warn:#a86500; --warn-bg:#fff1d6; --grey:#9aa2b2;
+  --font:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans","Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font:14px/1.45 var(--font);background:var(--bg);color:var(--text)}
+button,input,select,textarea{font:inherit;color:inherit}
+header{display:flex;align-items:center;gap:14px;padding:8px 16px;background:var(--panel);border-bottom:1px solid var(--line);height:48px;position:sticky;top:0;z-index:5}
+header .brand{font-weight:700;letter-spacing:.3px;color:var(--acc);font-size:16px}
+header nav{display:flex;gap:4px}
+header nav a{padding:5px 12px;border-radius:6px;color:var(--mute);text-decoration:none;font-weight:600}
+header nav a:hover{background:var(--line2)}
+header nav a.cur{background:var(--acc-bg);color:var(--acc)}
+header .sp{flex:1}
+button{border:1px solid var(--line);background:var(--panel);padding:6px 12px;border-radius:6px;cursor:pointer}
+button:hover:not(:disabled){border-color:var(--acc);color:var(--acc)}
+button.pri{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:600}
+button.pri:hover:not(:disabled){background:#1b47a4;color:#fff}
+button:disabled{opacity:.45;cursor:not-allowed}
+main{max-width:1280px;margin:0 auto;padding:14px 16px 40px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin-bottom:12px}
+.card>h3{margin:0 0 8px;font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--mute)}
+.chip{display:inline-block;padding:1px 8px;border-radius:10px;font-size:11.5px;background:var(--line2);color:var(--mute);white-space:nowrap}
+.chip.ok{background:var(--ok-bg);color:var(--ok)} .chip.bad{background:var(--bad-bg);color:var(--bad)}
+.chip.warn{background:var(--warn-bg);color:var(--warn)} .chip.acc{background:var(--acc-bg);color:var(--acc)}
+.note{background:var(--warn-bg);border:1px solid #f0d9a8;color:#6b4300;padding:8px 12px;border-radius:6px;margin:8px 0;font-size:13px}
+.err{background:var(--bad-bg);border:1px solid #efbcbc;color:var(--bad);padding:8px 12px;border-radius:6px;margin:8px 0;font-size:13px}
+.empty,.mute{color:var(--mute);font-size:13px}
+table{border-collapse:collapse;width:100%}th,td{text-align:left;padding:5px 8px;border-bottom:1px solid var(--line2);vertical-align:top}
+th{font-size:11.5px;text-transform:uppercase;color:var(--mute)}
+.mono{font-family:var(--mono);font-size:12px;word-break:break-word}
+.tr{border:1px solid var(--line);border-radius:6px;padding:6px 8px;margin-top:6px;background:#fafbfc;font-size:12.5px}
+.tr div{padding:1px 0}.tr b{display:inline-block;min-width:62px;color:var(--mute);font-size:11px;text-transform:uppercase}
+[hidden]{display:none!important}
+.tabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.tabs button.cur{background:var(--acc-bg);border-color:var(--acc);color:var(--acc);font-weight:600}
+.kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.kpis>div{border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+.kpis .v{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums}.kpis .l{font-size:12px;color:var(--mute)}
+.kpis .good{border-color:#b9e0c9;background:#f4fbf7}.kpis .badc{border-color:#efbcbc;background:#fdf3f3}
+details{border-bottom:1px solid var(--line2);padding:6px 0}
+summary{cursor:pointer;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.pre{white-space:pre-wrap;font-family:var(--mono);font-size:12px;background:#fafbfc;border:1px solid var(--line);border-radius:6px;padding:6px 8px;margin-top:6px}
+.reh{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:6px}
+.reh>div{border:1px solid var(--line);border-radius:7px;padding:6px 8px;background:#fafbfc;font-size:12.5px}
+@media (max-width:700px){.reh{display:block}.reh>div{margin-bottom:6px}}
+</style>
+</head>
+<body>
+<header>
+  <span class="brand">Prova</span>
+  <nav><a href="/">Dashboard</a><a href="/ui/playbook.html">Playbook</a><a href="/ui/lab.html" class="cur">Sandbox</a><a href="/ui/index.html#s7">Live calls</a><a href="http://127.0.0.1:8799/ui/index.html#s7" target="_blank" rel="noopener" title="Finished showcase run: calls, rehearsals, results">Demo</a></nav>
+  <span class="sp"></span><button id="reload">Reload</button>
+</header>
+<main>
+  <div id="banner"></div>
+  <div class="card"><h3>Certification</h3><div class="kpis" id="kpis"></div></div>
+  <div class="tabs" id="tabs"></div>
+  <div class="card" id="view"></div>
+</main>
+<script>
+"use strict";
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const api = async p => { const r = await fetch(p); const j = await r.json().catch(() => null); if (!r.ok) throw new Error((j && j.error) || r.status); return j; };
+const TABS = [["fixed", "Fixed attacks"], ["generated", "Generated attacks"], ["setup", "Setup attacks"], ["mutants", "Mutants"], ["guard", "Guard benchmark"], ["checks", "Rule checks"], ["calls", "Calls: rehearsals and brief"]];
+const S = {d: null, tab: location.hash.startsWith("#call") ? "calls" : "fixed"};
+const pass = ok => `<span class="chip ${ok ? "ok" : "bad"}">${ok ? "passed" : "FAILED"}</span>`;
+
+async function load() {
+  try { S.d = await api("/api/lab"); } catch (e) { $("#banner").innerHTML = `<div class="err">${esc(e.message)}</div>`; return; }
+  const d = S.d;
+  $("#banner").innerHTML = `<div class="note"><b>${d.fake ? "FAKE mode." : "Real model."}</b> ${d.fake ? esc(d.backend) + ". " : ""}${d.fake ? "Attacks, twins and the agent are scripted by the rules backend: this shows that the machinery works, not how a real model behaves. " : ""}${esc(d.labels.attacks)}</div>`;
+  const f = x => (x || []).filter(a => a.passed).length + " / " + (x || []).length;
+  const bad = x => (x || []).some(a => !a.passed);
+  const k = (l, v, b) => `<div class="${b == null ? "" : b ? "badc" : "good"}"><div class="v">${esc(v)}</div><div class="l">${esc(l)}</div></div>`;
+  const gb = d.guard_benchmark;
+  $("#kpis").innerHTML = d.run ? [k("Run", "#" + d.run.id + " " + d.run.status), k("Checks passed", d.run.passed + " / " + (d.run.passed + d.run.failed), d.run.failed > 0),
+    k("Fixed attacks", f(d.fixed_attacks), bad(d.fixed_attacks)), k("Generated attacks", f(d.generated_attacks), bad(d.generated_attacks)),
+    k("Setup attacks denied", f(d.setup_attacks), bad(d.setup_attacks)), k("Mutants caught", (d.mutants || []).filter(m => m.caught).length + " / " + (d.mutants || []).length, (d.mutants || []).some(m => !m.caught)),
+    gb && gb.catch_rate_pct != null ? k("Guard catch rate", gb.catch_rate_pct + "% of " + gb.malicious, !gb.passed) : "", gb && gb.false_block_rate_pct != null ? k("Guard false blocks", gb.false_block_rate_pct + "% of " + gb.benign, !gb.passed) : ""].join("")
+    : '<div class="empty">No certification run yet. Build in Setup first.</div>';
+  tabs(); view();
+}
+function tabs() {
+  $("#tabs").innerHTML = TABS.map(([k, l]) => `<button data-t="${k}" class="${k === S.tab ? "cur" : ""}">${l}</button>`).join("");
+  document.querySelectorAll("#tabs button").forEach(b => b.onclick = () => { S.tab = b.dataset.t; tabs(); view(); });
+}
+function turns(ts) { return ts && ts.length ? `<div class="pre">${ts.map(t => esc(t.role.toUpperCase() + ": " + t.text)).join("\n")}</div>` : '<div class="empty">No transcript (checked in code, no call).</div>'; }
+function attacks(list, setup) {
+  return (list || []).map(a => `<details><summary>${pass(a.passed)}<b>${esc(a.name)}</b>${setup && a.denied_by ? `<span class="chip warn">denied by ${esc(a.denied_by)}</span>` : ""}</summary>
+    ${a.script ? `<div class="mute">script: <span class="mono">${esc(a.script)}</span></div>` : ""}<div class="mute">evidence: <span class="mono">${esc(a.evidence)}</span></div>${setup ? "" : turns(a.transcript)}</details>`).join("") || '<div class="empty">none</div>';
+}
+function view() {
+  const d = S.d, el = $("#view"); if (!d) return;
+  if (!d.run && S.tab !== "calls") { el.innerHTML = '<div class="empty">No run yet.</div>'; return; }
+  if (S.tab === "fixed") el.innerHTML = "<h3>Fixed attacks (played as text calls against the agent)</h3>" + attacks(d.fixed_attacks);
+  else if (S.tab === "generated") el.innerHTML = "<h3>Generated attacks (written for this company)</h3>" + attacks(d.generated_attacks);
+  else if (S.tab === "setup") el.innerHTML = "<h3>Setup attacks: planted instructions an obedient agent would follow</h3>" + attacks(d.setup_attacks, true);
+  else if (S.tab === "mutants") el.innerHTML = `<h3>Mutants: the policy is weakened on purpose; a check must notice</h3><div class="mute">${esc(d.labels.mutants)}</div><table><tr><th>Mutant</th><th>What was weakened</th><th>Caught</th><th>By which check</th></tr>${
+    (d.mutants || []).map(m => `<tr><td class="mono">${esc(m.name)}</td><td class="mono">${esc(m.weakened ? JSON.stringify(m.weakened) : "")}</td><td>${pass(m.caught)}</td><td class="mono">${esc(m.caught_by || m.evidence)}</td></tr>`).join("")}</table>`;
+  else if (S.tab === "guard") { const g = d.guard_benchmark; el.innerHTML = "<h3>Agent Guard benchmark</h3><div class='mute'>" + esc(d.labels.guard) + "</div>" + (g ? `<p>${pass(g.passed)} catch rate <b>${g.catch_rate_pct ?? "?"}%</b> of ${g.malicious ?? "?"} malicious actions; false blocks <b>${g.false_block_rate_pct ?? "?"}%</b> of ${g.benign ?? "?"} normal ones.</p><div class="pre">${esc(g.evidence)}</div>` : '<div class="empty">not run</div>'); }
+  else if (S.tab === "checks") el.innerHTML = "<h3>Rule checks and lane tests (code)</h3>" + (d.checks || []).map(c => `<details><summary>${pass(c.passed)}<b>${esc(c.name)}</b></summary><div class="mono">${esc(c.evidence)}</div></details>`).join("");
+  else calls();
+}
+function calls() {
+  const el = $("#view"), list = S.d.calls || [], want = location.hash.startsWith("#call") ? +location.hash.slice(5) : null;
+  el.innerHTML = `<h3>Recent live and simulated calls: three rehearsals and the brief</h3>` + (S.d.fake ? '<div class="note">Rehearsal twins and calls ran in FAKE mode (scripted).</div>' : "") + (list.map(c => {
+    const b = c.brief || {};
+    return `<details id="call${c.call_id}" ${want === c.call_id ? "open" : ""}><summary><b>call ${c.call_id}</b> ${esc(c.customer || "")} <span class="chip">${esc(c.mode)}</span> <span class="chip acc">${esc(c.purpose)}</span> <span class="chip ${c.outcome === "won" ? "ok" : ""}">${esc(c.outcome || "?")}</span>${c.fake ? '<span class="chip warn">FAKE</span>' : ""}</summary>
+      <div class="reh">${c.rehearsals.map((r, i) => `<div><b>Rehearsal ${i + 1}</b><div>twin: ${esc(r.twin_persona || "?")}</div><div>outcome: ${esc(r.outcome || "?")}</div><div>${r.turns} turns</div></div>`).join("") || '<div class="empty">no rehearsals</div>'}</div>
+      <div class="pre">${esc(b.opening || "")}\nexpected objections: ${esc((b.expected_objections || []).map(o => o.situation).join(", "))}\npredicted: ${esc(b.predicted_outcome || "")} / ${esc(b.predicted_objection || "")}\ncards: ${esc(JSON.stringify(b.tactic_card_ids || []))}  explore: ${esc(b.explore_card_id ?? "none")}</div></details>`; }).join("") || '<div class="empty">No calls yet.</div>');
+  const t = want && document.getElementById("call" + want); if (t) t.scrollIntoView();
+}
+$("#reload").onclick = load;
+load();
+</script>
+</body>
+</html>

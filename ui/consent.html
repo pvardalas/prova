@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f6f5f2">
+<title>Prova</title>
+<style>
+:root { --bg:#f6f5f2; --ink:#1d1d1b; --mut:#6d6b66; --line:#e3e1db; --green:#1f9d55; --red:#d64541; --card:#fff; --acc:#2458c6; }
+* { box-sizing:border-box; }
+html,body { margin:0; min-height:100%; background:var(--bg); color:var(--ink);
+  font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
+main { max-width:480px; margin:0 auto; padding:max(18px,env(safe-area-inset-top)) 16px max(28px,env(safe-area-inset-bottom)); }
+.bar { display:flex; justify-content:space-between; align-items:center; color:var(--mut); font-size:13px; margin-bottom:14px; }
+.lang button { border:1px solid var(--line); background:#fff; border-radius:999px; padding:3px 10px; font-size:13px; cursor:pointer; color:var(--mut); }
+.lang button.on { background:var(--ink); color:#fff; border-color:var(--ink); }
+h1 { font-size:22px; margin:0 0 6px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px 16px; margin:12px 0; }
+.card h2 { font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--mut); margin:0 0 6px; }
+.card p { margin:0; }
+.ai { background:#eef3fd; border-color:#cdd9f4; }
+.btn { display:block; width:100%; border:0; border-radius:14px; padding:16px; font-size:18px; font-weight:600; cursor:pointer; margin:10px 0; }
+.btn.call { background:var(--green); color:#fff; }
+.btn.time { background:#fff; border:1px solid var(--ink); color:var(--ink); }
+.btn.stop { background:#fff; border:1px solid var(--line); color:var(--red); font-size:16px; }
+.btn:disabled { opacity:.5; }
+.ver { color:var(--mut); font-size:12px; margin-top:10px; }
+.msg { padding:10px 12px; border-radius:10px; margin:10px 0; font-size:15px; }
+.msg.ok { background:#e3f4ea; color:#14663a; } .msg.bad { background:#fbe7e7; color:#a52b28; } .msg.note { background:#fff1d6; color:#6b4300; }
+input[type=text],input[type=tel],input[type=datetime-local],select { width:100%; padding:12px; border:1px solid var(--line); border-radius:10px; font-size:16px; background:#fff; margin:4px 0 8px; }
+label { font-size:13px; color:var(--mut); }
+/* call view */
+#call { text-align:center; }
+.avatar { width:84px; height:84px; border-radius:50%; background:#e9e6df; margin:10px auto; display:grid; place-items:center; font-size:30px; font-weight:600; color:#8a857a; }
+.ringing .avatar { animation:pulse 1.2s ease-in-out infinite; }
+@keyframes pulse { 50% { box-shadow:0 0 0 16px rgba(31,157,85,.12); } }
+.status { color:var(--mut); }
+.caps { text-align:left; display:flex; flex-direction:column; gap:8px; margin:16px 0; max-height:42vh; overflow:auto; }
+.cap { background:#fff; border:1px solid var(--line); border-radius:14px; padding:8px 12px; font-size:15px; max-width:88%; }
+.cap.agent { align-self:flex-start; } .cap.customer { align-self:flex-end; background:#eef6f1; border-color:#d5eadc; }
+.cap small { display:block; color:var(--mut); font-size:12px; }
+.round { width:68px; height:68px; border-radius:50%; border:0; color:#fff; font-weight:600; cursor:pointer; background:var(--red); }
+[hidden] { display:none !important; }
+a { color:var(--acc); }
+</style>
+</head>
+<body>
+<main>
+  <div class="bar"><span id="brand">Prova</span><span class="lang"><button data-l="el">EL</button> <button data-l="en">EN</button></span></div>
+
+  <!-- consent view -->
+  <section id="view-consent" hidden>
+    <h1 id="h-title"></h1>
+    <div class="card"><h2 id="t-who"></h2><p id="v-who"></p></div>
+    <div class="card"><h2 id="t-why"></h2><p id="v-why"></p></div>
+    <div class="card ai"><h2 id="t-ai"></h2><p id="v-ai"></p></div>
+    <div class="card"><h2 id="t-obj"></h2><p id="v-obj"></p></div>
+    <form id="joinform" class="card" hidden>
+      <label id="l-name"></label><input type="text" id="f-name" autocomplete="name" required>
+      <label id="l-phone"></label><input type="tel" id="f-phone" autocomplete="tel" required>
+      <label id="l-lang"></label><select id="f-lang"><option value="el">Ελληνικά</option><option value="en">English</option></select>
+    </form>
+    <div id="msg"></div>
+    <button class="btn call" id="b-now"></button>
+    <button class="btn time" id="b-time"></button>
+    <div id="timebox" class="card" hidden>
+      <label id="l-when"></label><input type="datetime-local" id="f-when">
+      <button class="btn time" id="b-time-go"></button>
+    </div>
+    <button class="btn stop" id="b-stop"></button>
+    <div class="ver" id="v-ver"></div>
+  </section>
+
+  <!-- call view (same page) -->
+  <section id="view-call" hidden>
+    <div id="call">
+      <div class="avatar" id="av">P</div>
+      <div class="status" id="c-status"></div>
+      <h1 id="c-who"></h1>
+      <div class="caps" id="caps"></div>
+      <div id="c-ring" hidden><button class="round" style="background:var(--green)" id="b-ans"></button></div>
+      <div id="c-live" hidden><button class="round" id="b-hang"></button></div>
+    </div>
+  </section>
+
+  <!-- done view -->
+  <section id="view-done" hidden>
+    <h1 id="d-title"></h1>
+    <div id="d-msg" class="msg ok"></div>
+    <p><a id="d-link" href="#" hidden></a></p>
+  </section>
+</main>
+
+<script>
+"use strict";
+/*
+ * Shared by GET /k/{token} (existing customer, consent request) and GET /join (QR, new customer).
+ * Data: the page asks its own URL for JSON (fetch(location.pathname, {headers:{Accept:"application/json"}})):
+ *   -> {company, who?, why?, text?, text_version, language?, customer_name?, token, status, inbox_url?}
+ *   (all optional: sensible Greek/English defaults are shown when a field is missing).
+ * Actions: POST to the same path with JSON
+ *   /k/{token}: {choice: "call_now"|"scheduled"|"stop", when?: ISO}  -> {ok, token?, status}
+ *   /join:      {name, phone, language, consent_text_version, choice: "call_now"|...} -> {ok, token (consent token), status}
+ * Browser call: after call_now the page opens WebSocket /api/phone/ws?ct=<consent token>.
+ *   The query parameter is `ct` (not `k`, which is the shared desk-phone token). Builder B binds the next call
+ *   for that customer to this socket. The server sends {type:"ring"}; the page auto-answers because the
+ *   customer's own tap started the call.
+ */
+const $ = s => document.querySelector(s);
+const esc = v => String(v == null ? "" : v).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const isJoin = location.pathname.replace(/\/+$/, "") === "/join";
+let lang = "el", info = {}, token = "";
+try { lang = new URLSearchParams(location.search).get("lang") || localStorage.getItem("prova_lang") || "el"; } catch (e) {}
+if (lang !== "en") lang = "el";
+
+const T = {
+  el: {
+    title: "Μπορούμε να σας καλέσουμε;", who: "Ποιος επικοινωνεί", why: "Γιατί", ai: "Ενημέρωση για τεχνητή νοημοσύνη", obj: "Δικαίωμα εναντίωσης",
+    whoV: c => `${c}. Θα μιλήσετε με ψηφιακό βοηθό του γραφείου.`,
+    whyV: "Για να σας ενημερώσουμε για τη λήξη και την ανανέωση του συμβολαίου σας.",
+    aiV: "Η κλήση γίνεται από βοηθό τεχνητής νοημοσύνης, όχι από άνθρωπο. Η κλήση καταγράφεται για λόγους ποιότητας.",
+    objV: "Μπορείτε να αρνηθείτε ή να ανακαλέσετε τη συναίνεσή σας οποιαδήποτε στιγμή, πατώντας «Να μη με καλείτε». Δεν χρειάζεται αιτιολόγηση.",
+    now: "Καλέστε με τώρα", time: "Επιλέξτε ώρα", stop: "Να μη με καλείτε", go: "Προγραμματισμός", when: "Πότε να σας καλέσουμε;",
+    name: "Ονοματεπώνυμο", phone: "Τηλέφωνο", lng: "Γλώσσα κλήσης", ver: v => `Κείμενο συναίνεσης, έκδοση ${v}`,
+    joinWhy: "Δοκιμάστε τον ψηφιακό βοηθό του γραφείου: θα σας καλέσει στη σελίδα αυτή, χωρίς τηλεφωνικό αριθμό.",
+    ringing: "Εισερχόμενη κλήση", connecting: "Σύνδεση...", answer: "Απάντηση", hang: "Τέλος", mic: "Επιτρέψτε το μικρόφωνο στον περιηγητή και δοκιμάστε ξανά.",
+    wait: "Ο βοηθός σας καλεί σε λίγο...", ended: "Η κλήση ολοκληρώθηκε", dropped: "Η σύνδεση διακόπηκε", you: "Εσείς", ai_: "Βοηθός (ΤΝ)",
+    doneCall: "Ευχαριστούμε. Η συναίνεσή σας καταγράφηκε.", doneTime: "Ευχαριστούμε. Θα σας καλέσουμε στην ώρα που επιλέξατε.", doneStop: "Σας διαγράψαμε από τις κλήσεις. Δεν θα σας καλέσουμε ξανά.",
+    dTitle: "Έγινε", inbox: "Ανοίξτε τα μηνύματά σας", err: "Κάτι πήγε στραβά: ", fill: "Συμπληρώστε όνομα και τηλέφωνο.", expired: "Ο σύνδεσμος δεν ισχύει πια.",
+    nowired: "Δεν είναι συνδεδεμένο ακόμα (ο διακομιστής δεν έχει αυτή τη διαδρομή).", pickwhen: "Επιλέξτε ημερομηνία και ώρα.",
+  },
+  en: {
+    title: "May we call you?", who: "Who is contacting you", why: "Why", ai: "AI disclosure", obj: "Right to object",
+    whoV: c => `${c}. You will speak with the office's digital assistant.`,
+    whyV: "To tell you about your policy ending and to offer you a renewal.",
+    aiV: "The call is made by an AI assistant, not a person. The call is recorded for quality.",
+    objV: "You may refuse or withdraw your consent at any time by pressing “Do not call me”. You do not need to give a reason.",
+    now: "Call me now", time: "Pick a time", stop: "Do not call me", go: "Schedule", when: "When should we call?",
+    name: "Full name", phone: "Phone", lng: "Call language", ver: v => `Consent text, version ${v}`,
+    joinWhy: "Try the office's digital assistant: it will call you on this page, no phone number is dialled.",
+    ringing: "Incoming call", connecting: "Connecting...", answer: "Answer", hang: "End", mic: "Allow the microphone in your browser and try again.",
+    wait: "Your assistant is calling in a moment...", ended: "Call ended", dropped: "Connection lost", you: "You", ai_: "Assistant (AI)",
+    doneCall: "Thank you. Your consent is recorded.", doneTime: "Thank you. We will call you at the time you chose.", doneStop: "You are removed from calls. We will not call you again.",
+    dTitle: "Done", inbox: "Open your messages", err: "Something went wrong: ", fill: "Enter your name and phone.", expired: "This link is no longer valid.",
+    nowired: "Not wired yet (the server has no such route).", pickwhen: "Pick a date and time.",
+  },
+};
+const t = k => T[lang][k];
+
+function paint() {
+  document.documentElement.lang = lang;
+  document.querySelectorAll(".lang button").forEach(b => b.classList.toggle("on", b.dataset.l === lang));
+  const co = info.company || info.company_name || "Prova";
+  $("#brand").textContent = co;
+  $("#h-title").textContent = t("title");
+  $("#t-who").textContent = t("who"); $("#t-why").textContent = t("why"); $("#t-ai").textContent = t("ai"); $("#t-obj").textContent = t("obj");
+  $("#v-who").textContent = info.who || t("whoV")(co);
+  $("#v-why").textContent = isJoin && !info.why ? t("joinWhy") : (info.why || t("whyV"));
+  $("#v-ai").textContent = info.ai_disclosure || t("aiV");
+  $("#v-obj").textContent = info.right_to_object || t("objV");
+  $("#b-now").textContent = t("now"); $("#b-time").textContent = t("time"); $("#b-stop").textContent = t("stop"); $("#b-time-go").textContent = t("go");
+  $("#l-when").textContent = t("when"); $("#l-name").textContent = t("name"); $("#l-phone").textContent = t("phone"); $("#l-lang").textContent = t("lng");
+  $("#v-ver").textContent = info.text_version ? t("ver")(info.text_version) : "";
+  $("#b-ans").textContent = t("answer"); $("#b-hang").textContent = t("hang");
+  $("#av").textContent = co.trim().charAt(0).toUpperCase() || "P";
+  $("#c-who").textContent = co;
+  $("#joinform").hidden = !isJoin;
+  if (isJoin) { $("#b-time").hidden = true; $("#b-stop").hidden = true; $("#timebox").hidden = true; }   // /join is "call me now" only
+  if (isJoin) $("#f-lang").value = lang;
+}
+document.querySelectorAll(".lang button").forEach(b => b.onclick = () => { lang = b.dataset.l; try { localStorage.setItem("prova_lang", lang); } catch (e) {} paint(); });
+
+function show(v) { for (const s of ["consent", "call", "done"]) $("#view-" + s).hidden = s !== v; }
+function msg(text, cls) { $("#msg").innerHTML = text ? `<div class="msg ${cls || "bad"}">${esc(text)}</div>` : ""; }
+
+async function post(body) {
+  try {
+    const r = await fetch(location.pathname, { method: "POST", headers: { "Content-Type": "application/json", "Accept": "application/json" }, body: JSON.stringify(body) });
+    const txt = await r.text(); let d = null; try { d = txt ? JSON.parse(txt) : {}; } catch (e) { d = {}; }
+    if (r.status === 404 || r.status === 405) return { ok: false, error: t("nowired") };
+    if (!r.ok || (d && d.error)) return { ok: false, error: (d && (d.error || (typeof d.detail === "string" ? d.detail : d.detail && d.detail.error))) || r.status };
+    return { ok: true, data: d || {} };
+  } catch (e) { return { ok: false, error: String(e) }; }
+}
+function joinBody() {
+  const name = $("#f-name").value.trim(), phone = $("#f-phone").value.trim();
+  if (!name || !phone) { msg(t("fill")); return null; }
+  return { name, phone, language: $("#f-lang").value, consent_text_version: info.text_version || "" };
+}
+async function choose(choice, when) {
+  msg("");
+  let body = { choice };
+  if (when) body.when = when;
+  if (isJoin) { const j = joinBody(); if (!j) return; body = Object.assign(j, body); }
+  const bs = document.querySelectorAll(".btn"); bs.forEach(b => b.disabled = true);
+  const r = await post(body);
+  bs.forEach(b => b.disabled = false);
+  if (!r.ok) return msg(t("err") + r.error);
+  const d = r.data;
+  if (d.token) token = d.token;
+  if (d.inbox_url) info.inbox_url = d.inbox_url;
+  if (choice === "call_now") return startCall();
+  done(choice === "stop" ? t("doneStop") : t("doneTime"));
+}
+$("#b-now").onclick = () => choose("call_now");
+$("#b-time").onclick = () => { $("#timebox").hidden = !$("#timebox").hidden; };
+$("#b-time-go").onclick = () => { const v = $("#f-when").value; if (!v) return msg(t("pickwhen")); choose("scheduled", new Date(v).toISOString()); };
+$("#b-stop").onclick = () => choose("stop");
+function done(text) {
+  show("done"); $("#d-title").textContent = t("dTitle"); $("#d-msg").textContent = text;
+  const u = info.inbox_url || (token ? "/inbox/" + token : "");
+  const a = $("#d-link"); if (u) { a.href = u; a.textContent = t("inbox"); a.hidden = false; }
+}
+
+/* ---------------------------------------------------------------- browser call (from phone.html) */
+let ws, ctx, mic, node, ringer, timer, t0, wake, playAt = 0, sources = [], buf = [], ratio = 1, cstate = "off", cfails = 0, hadCall = false;
+function cset(status) { $("#c-status").textContent = status; }
+function cshow(w) { $("#c-ring").hidden = w !== "ring"; $("#c-live").hidden = w !== "live"; }
+
+async function startCall() {
+  show("call"); $("#caps").innerHTML = ""; cset(t("connecting")); cshow("none");
+  try {
+    mic = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true, channelCount: 1 } });
+  } catch (e) { show("consent"); return msg(t("mic")); }
+  ctx = new (window.AudioContext || window.webkitAudioContext)();
+  await ctx.resume();
+  ratio = ctx.sampleRate / 16000;
+  const code = `class Tap extends AudioWorkletProcessor { process(i) { if (i[0] && i[0][0]) this.port.postMessage(i[0][0].slice(0)); return true; } }
+                registerProcessor("tap", Tap);`;
+  await ctx.audioWorklet.addModule(URL.createObjectURL(new Blob([code], { type: "application/javascript" })));
+  node = new AudioWorkletNode(ctx, "tap");
+  node.port.onmessage = e => { if (cstate === "call") pushMic(e.data); };
+  const src = ctx.createMediaStreamSource(mic), sink = ctx.createGain(); sink.gain.value = 0;
+  src.connect(node); node.connect(sink); sink.connect(ctx.destination);
+  try { wake = await navigator.wakeLock?.request("screen"); } catch (e) {}
+  cset(t("wait")); connect();
+}
+function connect() {
+  ws = new WebSocket((location.protocol === "https:" ? "wss://" : "ws://") + location.host + "/api/phone/ws?ct=" + encodeURIComponent(token));
+  ws.binaryType = "arraybuffer";
+  ws.onopen = () => { cfails = 0; };
+  ws.onclose = () => {
+    if (cstate === "call") return ended(t("dropped"));
+    if (hadCall) return;
+    cfails++; if (cfails < 6) setTimeout(connect, 1500); else { cset(t("expired")); }
+  };
+  ws.onmessage = e => {
+    if (typeof e.data !== "string") return play(e.data);
+    const m = JSON.parse(e.data);
+    if (m.type === "ring") ring(m);
+    else if (m.type === "connected") inCall();
+    else if (m.type === "clear") stopPlayback();
+    else if (m.type === "caption") caption(m.role, m.text);
+    else if (m.type === "ended") ended(t("ended"));
+  };
+}
+function ring(m) {
+  cstate = "ring"; hadCall = true; cset(t("ringing"));
+  // the customer's own tap started this call: answer right away (no second prompt)
+  ws.send(JSON.stringify({ type: "answer" })); cshow("none"); cset(t("connecting"));
+}
+function inCall() {
+  cstate = "call"; cshow("live"); playAt = 0; t0 = Date.now();
+  timer = setInterval(() => { const s = Math.floor((Date.now() - t0) / 1000); cset(`${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`); }, 500);
+}
+function ended(why) {
+  clearInterval(timer); stopPlayback(); buf = []; cstate = "off"; cshow("none"); cset(why);
+  try { ws && ws.close(); } catch (e) {}
+  try { mic && mic.getTracks().forEach(x => x.stop()); } catch (e) {}
+  setTimeout(() => done(t("doneCall")), 1800);
+}
+$("#b-ans").onclick = () => ws.send(JSON.stringify({ type: "answer" }));
+$("#b-hang").onclick = () => { if (ws && ws.readyState === 1) ws.send(JSON.stringify({ type: "hangup" })); };
+function pushMic(f32) {
+  for (const v of f32) buf.push(v);
+  const need = Math.floor(640 * ratio);
+  while (buf.length >= need) {
+    const chunk = buf.splice(0, need), out = new Int16Array(640);
+    for (let i = 0; i < 640; i++) {
+      const p = i * ratio, j = Math.floor(p), fr = p - j, a = chunk[j] || 0, b = chunk[j + 1] ?? a;
+      out[i] = Math.max(-1, Math.min(1, a + (b - a) * fr)) * 32767;
+    }
+    if (ws.readyState === 1) ws.send(out.buffer);
+  }
+}
+function play(ab) {
+  const i16 = new Int16Array(ab), n = i16.length; if (!n) return;
+  const b = ctx.createBuffer(1, n, 24000), ch = b.getChannelData(0);
+  for (let i = 0; i < n; i++) ch[i] = i16[i] / 32768;
+  const s = ctx.createBufferSource(); s.buffer = b; s.connect(ctx.destination);
+  playAt = Math.max(playAt, ctx.currentTime + 0.06); s.start(playAt); playAt += b.duration;
+  sources.push(s); s.onended = () => { sources = sources.filter(x => x !== s); };
+}
+function stopPlayback() { for (const s of sources) { try { s.stop(); } catch (e) {} } sources = []; playAt = 0; }
+function caption(role, text) {
+  const d = document.createElement("div"); d.className = "cap " + role;
+  d.innerHTML = `<small>${role === "agent" ? esc(t("ai_")) : esc(t("you"))}</small>${esc(text)}`;
+  $("#caps").append(d); d.scrollIntoView({ block: "end", behavior: "smooth" });
+}
+
+/* ---------------------------------------------------------------- boot */
+(async function boot() {
+  paint(); show("consent");
+  try {
+    const r = await fetch(location.pathname, { headers: { Accept: "application/json" } });
+    const ct = r.headers.get("content-type") || "";
+    if (r.status === 404 || r.status === 405) { msg(t("nowired"), "note"); }
+    else if (r.status === 410 || r.status === 403) { msg(t("expired")); $("#b-now").disabled = $("#b-time").disabled = true; }
+    else if (r.ok && ct.includes("json")) {
+      info = await r.json() || {};
+      token = info.token || token || (location.pathname.startsWith("/k/") ? location.pathname.split("/")[2] : "");
+      if (info.status === "stopped" || info.status === "expired") msg(t("expired"));
+    }
+  } catch (e) { msg(t("err") + e); }
+  if (!token && !isJoin) token = location.pathname.split("/")[2] || "";
+  paint();
+})();
+</script>
+</body>
+</html>

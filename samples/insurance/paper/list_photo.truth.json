@@ -1,0 +1,419 @@
+{
+  "image": "list_photo.jpg",
+  "sha256": "(fill in after the photo is taken)",
+  "pages": 1,
+  "note": "Ground truth a vision model would return for a photo of a handwritten client list. Used as the FAKE for intake OCR. bbox = [x, y, w, h] as fractions of the page image.",
+  "columns": [
+    "name",
+    "phone",
+    "expiry",
+    "consent"
+  ],
+  "rows": [
+    {
+      "row": 1,
+      "cells": [
+        {
+          "col": "name",
+          "page": 1,
+          "row": 1,
+          "text": "Γεωργίου Κώστας",
+          "confidence": 0.97,
+          "bbox": [
+            0.04,
+            0.14,
+            0.3,
+            0.060000000000000005
+          ]
+        },
+        {
+          "col": "phone",
+          "page": 1,
+          "row": 1,
+          "text": "694 000 0161",
+          "confidence": 0.96,
+          "bbox": [
+            0.34,
+            0.14,
+            0.26,
+            0.060000000000000005
+          ]
+        },
+        {
+          "col": "expiry",
+          "page": 1,
+          "row": 1,
+          "text": "15/12/2026",
+          "confidence": 0.95,
+          "bbox": [
+            0.62,
+            0.14,
+            0.17,
+            0.060000000000000005
+          ]
+        },
+        {
+          "col": "consent",
+          "page": 1,
+          "row": 1,
+          "text": "ΝΑΙ",
+          "confidence": 0.93,
+          "bbox": [
+            0.81,
+            0.14,
+            0.14,
+            0.060000000000000005
+          ]
+        }
+      ]
+    },
+    {
+      "row": 2,
+      "cells": [
+        {
+          "col": "name",
+          "page": 1,
+          "row": 2,
+          "text": "Μαυρίδου Ελένη",
+          "confidence": 0.96,
+          "bbox": [
+            0.04,
+            0.21,
+            0.3,
+            0.060000000000000005
+          ]
+        },
+        {
+          "col": "phone",
+          "page": 1,
+          "row": 2,
+          "text": "690 000 0162",
+          "confidence": 0.95,
+          "bbox": [
+            0.34,
+            0.21,
+            0.26,
+            0.060000000000000005
+          ]
+        },
+        {
+          "col": "expiry",
+          "page": 1,
+          "row": 2,
+          "text": "03/01/2027",
+          "confidence": 0.92,
+          "bbox": [
+            0.62,
+            0.21,
+            0.17,
+            0.060000000000000005
+          ]
+        },
+        {
+          "col": "consent",
+          "page": 1,
+          "row": 2,
+          "text": "ΝΑΙ",
+          "confidence": 0.94,
+          "bbox": [
+            0.81,
+            0.21,
+            0.14,
+            0.060000000000000005
+          ]
+        }
+      ]
+    },
+    {
+      "row": 3,
+      "cells": [
+        {
+          "col": "name",
+          "page": 1,
+          "row": 3,
+          "text": "Κανελλόπουλος Θεός",
+          "confidence": 0.93,
+          "bbox": [
+            0.04,
+            0.28,
+            0.3,
+            0.060000000000000005
+          ]
+        },
+        {
+          "col": "phone",
+          "page": 1,
+          "row": 3,
+          "text": "6900 00O 163",
+          "confidence": 0.52,
+          "bbox": [
+            0.34,
+            0.28,
+            0.26,
+            0.060000000000000005
+          ],
+          "second_read": "6900 000 163",
+          "flag": "disagreement"
+        },
+        {
+          "col": "expiry",
+          "page": 1,
+          "row": 3,
+          "text": "20-12-26",
+          "confidence": 0.88,
+          "bbox": [
+            0.62,
+            0.28,
+            0.17,
+            0.060000000000000005
+          ]
+        },
+        {
+          "col": "consent",
+          "page": 1,
+          "row": 3,
+          "text": "ναι",
+          "confidence": 0.9,
+          "bbox": [
+            0.81,
+            0.28,
+            0.14,
+            0.060000000000000005
+          ]
+        }
+      ]
+    },
+    {
+      "row": 4,
+      "cells": [
+        {
+          "col": "name",
+          "page": 1,
+          "row": 4,
+          "text": "Βλάχου Σοφία",
+          "confidence": 0.95,
+          "bbox": [
+            0.04,
+            0.35,
+            0.3,
+            0.060000000000000005
+          ]
+        },
+        {
+          "col": "phone",
+          "page": 1,
+          "row": 4,
+          "text": "690 000 0164",
+          "confidence": 0.94,
+          "bbox": [
+            0.34,
+            0.35,
+            0.26,
+            0.060000000000000005
+          ]
+        },
+        {
+          "col": "expiry",
+          "page": 1,
+          "row": 4,
+          "text": "8 Ιαν 2027",
+          "confidence": 0.84,
+          "bbox": [
+            0.62,
+            0.35,
+            0.17,
+            0.060000000000000005
+          ]
+        },
+        {
+          "col": "consent",
+          "page": 1,
+          "row": 4,
+          "text": null,
+          "confidence": 0.9,
+          "bbox": [
+            0.81,
+            0.35,
+            0.14,
+            0.060000000000000005
+          ],
+          "blank": true
+        }
+      ]
+    },
+    {
+      "row": 5,
+      "cells": [
+        {
+          "col": "name",
+          "page": 1,
+          "row": 5,
+          "text": "Δημητρίου Αντώνης",
+          "confidence": 0.91,
+          "bbox": [
+            0.04,
+            0.42,
+            0.3,
+            0.060000000000000005
+          ]
+        },
+        {
+          "col": "phone",
+          "page": 1,
+          "row": 5,
+          "text": "690 000 0165",
+          "confidence": 0.93,
+          "bbox": [
+            0.34,
+            0.42,
+            0.26,
+            0.060000000000000005
+          ]
+        },
+        {
+          "col": "expiry",
+          "page": 1,
+          "row": 5,
+          "text": "30/12/2026",
+          "confidence": 0.9,
+          "bbox": [
+            0.62,
+            0.42,
+            0.17,
+            0.060000000000000005
+          ]
+        },
+        {
+          "col": "consent",
+          "page": 1,
+          "row": 5,
+          "text": "✓",
+          "confidence": 0.71,
+          "bbox": [
+            0.81,
+            0.42,
+            0.14,
+            0.060000000000000005
+          ],
+          "mark": "tick"
+        }
+      ]
+    },
+    {
+      "row": 6,
+      "cells": [
+        {
+          "col": "name",
+          "page": 1,
+          "row": 6,
+          "text": "Ράλλης Στέφανος",
+          "confidence": 0.94,
+          "bbox": [
+            0.04,
+            0.49,
+            0.3,
+            0.060000000000000005
+          ]
+        },
+        {
+          "col": "phone",
+          "page": 1,
+          "row": 6,
+          "text": "210 000 0166",
+          "confidence": 0.9,
+          "bbox": [
+            0.34,
+            0.49,
+            0.26,
+            0.060000000000000005
+          ]
+        },
+        {
+          "col": "expiry",
+          "page": 1,
+          "row": 6,
+          "text": "11/01/2027",
+          "confidence": 0.86,
+          "bbox": [
+            0.62,
+            0.49,
+            0.17,
+            0.060000000000000005
+          ]
+        },
+        {
+          "col": "consent",
+          "page": 1,
+          "row": 6,
+          "text": "ΟΧΙ",
+          "confidence": 0.95,
+          "bbox": [
+            0.81,
+            0.49,
+            0.14,
+            0.060000000000000005
+          ]
+        }
+      ]
+    },
+    {
+      "row": 7,
+      "cells": [
+        {
+          "col": "name",
+          "page": 1,
+          "row": 7,
+          "text": "Ιωάννου Μαρία",
+          "confidence": 0.96,
+          "bbox": [
+            0.04,
+            0.56,
+            0.3,
+            0.060000000000000005
+          ]
+        },
+        {
+          "col": "phone",
+          "page": 1,
+          "row": 7,
+          "text": "690 000 0167",
+          "confidence": 0.4,
+          "bbox": [
+            0.34,
+            0.56,
+            0.26,
+            0.060000000000000005
+          ],
+          "second_read": "690 000 0167",
+          "flag": "low_confidence"
+        },
+        {
+          "col": "expiry",
+          "page": 1,
+          "row": 7,
+          "text": "25/12/2026",
+          "confidence": 0.87,
+          "bbox": [
+            0.62,
+            0.56,
+            0.17,
+            0.060000000000000005
+          ]
+        },
+        {
+          "col": "consent",
+          "page": 1,
+          "row": 7,
+          "text": "ΝΑΙ",
+          "confidence": 0.92,
+          "bbox": [
+            0.81,
+            0.56,
+            0.14,
+            0.060000000000000005
+          ]
+        }
+      ]
+    }
+  ]
+}
