@@ -51,7 +51,7 @@ nav{font-size:13px;margin-top:6px}nav a{color:var(--acc);margin-right:12px}
   <h2>Handoffs (clients who asked for a person)</h2>
   <div id="handoffs"><div class="empty">None.</div></div>
 
-  <nav><a href="/">Dashboard</a><a href="/ui/playbook.html">Playbook</a><a href="/ui/lab.html">Sandbox</a><a href="/ui/index.html#s7">Live calls</a><a href="http://127.0.0.1:8799/ui/index.html#s7" target="_blank" rel="noopener" title="Finished showcase run: calls, rehearsals, results">Demo</a></nav>
+  <nav><a href="/">Dashboard</a><a href="/ui/playbook.html">Playbook</a><a href="/ui/lab.html">Sandbox</a><a href="/ui/index.html#s7">Live calls</a><a href="#" onclick="provaLoadDemo(event)" title="Load the finished demo run: every step usable, calls always allowed" style="font-weight:600">Load demo</a></nav>
 </main>
 <script>
 "use strict";
@@ -154,6 +154,13 @@ function stream() {
   es.onerror = () => { fails++; $("#conn").textContent = "reconnecting"; $("#live").classList.remove("on"); if (fails >= 2) { try { es.close(); } catch (e) {} if (!poll) poll = setInterval(load, 3000); } };
 }
 load(); stream();
+</script>
+<script>
+async function provaLoadDemo(e){ if(e) e.preventDefault();
+  if(!confirm("Load the finished demo run? This replaces the data on this server with the demo (calls always allowed, name-only check).")) return;
+  const r = await fetch("/api/demo/load", {method:"POST"}); const j = await r.json().catch(()=>({}));
+  if(!r.ok){ alert("Load demo failed: " + JSON.stringify(j.detail || j)); return; }
+  location.href = "/ui/index.html#s7"; setTimeout(()=>location.reload(), 50); }
 </script>
 </body>
 </html>

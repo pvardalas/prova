@@ -13,6 +13,9 @@ from fastapi import Body, FastAPI, File, HTTPException, Request, UploadFile
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Response, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 
+from pathlib import Path
+import logging
+
 from prova import db, flow, template
 from prova import guard
 from prova.guard import auth, confirm
@@ -449,6 +452,32 @@ def _why_not(customer: dict, mode: str, via: str) -> str | None:
             return ("No phone is connected. Open the phone link (QR) on your mobile, tap to turn the demo phone on, "
                     "and keep that page open." if not ph.get("browser_phones") else "The connected phone is busy with another call.")
     return None
+
+
+@app.post("/api/demo/load")
+def demo_load():
+    """Owner: replace the current data with the finished demo run (data/demo.db). Calls are always allowed in demo mode
+    (no calling-hours / attempts / gap / budget limits; consent and do-not-call still apply); identity = name only."""
+    root = Path(__file__).resolve().parent.parent
+    src = Path(os.environ.get("PROVA_DEMO_DB") or next((p for p in (root / "demo" / "demo.db", root / "data" / "demo.db")
+                                                         if p.exists()), root / "demo" / "demo.db"))
+    if not src.exists():
+        raise HTTPException(404, f"demo database not found: {src}")
+    if src.resolve() == db.DB_PATH.resolve():
+        raise HTTPException(400, "this server already runs on the demo source database; start it with another PROVA_DB")
+    db.load_demo(src)
+    db.set_slot("identity_check", {"field": "name", "question": "Μιλάω με τον/την ίδιο/α;"}, "owner", status="confirmed")
+    try:
+        flow.rank_customers(None, None)
+    except Exception as e:  # noqa: BLE001  ranking is a nicety here; demo mode still finds a callable customer
+        logging.getLogger("prova").warning("demo rank failed: %s", e)
+    return {"ok": True, "demo_mode": True, "customers": (db.one("SELECT COUNT(*) n FROM customer") or {}).get("n"),
+            "calls": (db.one("SELECT COUNT(*) n FROM call") or {}).get("n")}
+
+
+@app.get("/api/demo")
+def demo_status():
+    return {"demo_mode": db.demo_mode()}
 
 
 @app.get("/api/ready")

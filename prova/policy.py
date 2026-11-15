@@ -455,6 +455,7 @@ def _may_dial(customer: dict, purpose: str, mode: str, now: datetime, cost: floa
     s = effective()
     live = mode not in NON_LIVE
     company = db.company() or {}
+    demo = db.demo_mode()
 
     def deny(rule, reason):
         return {"allow": False, "rule": rule, "reason": reason}
@@ -466,7 +467,7 @@ def _may_dial(customer: dict, purpose: str, mode: str, now: datetime, cost: floa
     cf = (customer.get("fields") or {})
     if customer.get("status") == "do_not_call" or cf.get("do_not_call") is True:
         return deny("do_not_call", "customer asked not to be called")
-    if customer.get("status") in ("won", "lost"):
+    if customer.get("status") in ("won", "lost") and not demo:
         return deny("customer_status", f"customer is already '{customer['status']}'")
     if (customer.get("consent") or {}).get("automated_calls") is not True and not _mutant("consent_off"):
         return deny("consent", "no recorded consent for automated calls")
@@ -479,19 +480,19 @@ def _may_dial(customer: dict, purpose: str, mode: str, now: datetime, cost: floa
     for seg in s.get("blocked_segments") or []:
         if match(seg, customer, now):
             return deny("segment_block", "the customer is in a segment the company put on hold")
-    if live and not in_call_hours(now, s) and not _fresh_tap(customer, now):
+    if live and not demo and not in_call_hours(now, s) and not _fresh_tap(customer, now):
         w = s.get("call_hours") or {}
         return deny("call_hours", f"outside the calling window ({w.get('from')}-{w.get('to')}, days {w.get('days')})")
-    if (customer.get("attempts") or 0) >= s["max_attempts"]:
+    if not demo and (customer.get("attempts") or 0) >= s["max_attempts"]:
         return deny("max_attempts", f"already called {customer.get('attempts')} times (max {s['max_attempts']:g})")
-    if live and customer.get("last_called_at"):
+    if live and not demo and customer.get("last_called_at"):
         try:
             gap = (now - datetime.fromisoformat(customer["last_called_at"])).total_seconds() / 3600
             if gap < s["min_gap_hours"]:
                 return deny("min_gap", f"last call was {gap:.1f} h ago (minimum {s['min_gap_hours']:g} h)")
         except ValueError:
             pass
-    if live:
+    if live and not demo:
         spent = db.cost_total() if cost is None else cost
         if spent >= (company.get("budget_eur") or 0):
             return deny("budget", f"budget of {company.get('budget_eur')} EUR is used up")

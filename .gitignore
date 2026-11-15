@@ -14,3 +14,4 @@ demo/video/audio_raw/
 demo/video/shots/
 demo/video/draft_v1.mp4
 demo/video/draft_v2.mp4
+!demo/demo.db

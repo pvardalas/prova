@@ -65,7 +65,7 @@ svg text{font:11px var(--font);fill:var(--mute)}
 <body>
 <header>
   <span class="brand">Prova</span>
-  <nav><a href="/">Dashboard</a><a href="/ui/playbook.html" class="cur">Playbook</a><a href="/ui/lab.html">Sandbox</a><a href="/ui/index.html#s7">Live calls</a><a href="http://127.0.0.1:8799/ui/index.html#s7" target="_blank" rel="noopener" title="Finished showcase run: calls, rehearsals, results">Demo</a></nav>
+  <nav><a href="/">Dashboard</a><a href="/ui/playbook.html" class="cur">Playbook</a><a href="/ui/lab.html">Sandbox</a><a href="/ui/index.html#s7">Live calls</a><a href="#" onclick="provaLoadDemo(event)" title="Load the finished demo run: every step usable, calls always allowed" style="font-weight:600">Load demo</a></nav>
   <span class="sp"></span><span class="mute" id="conn"></span>
 </header>
 <main>
@@ -183,6 +183,13 @@ function stream() {
   es.onopen = () => $("#conn").textContent = "live"; es.onerror = () => $("#conn").textContent = "reconnecting";
 }
 init();
+</script>
+<script>
+async function provaLoadDemo(e){ if(e) e.preventDefault();
+  if(!confirm("Load the finished demo run? This replaces the data on this server with the demo (calls always allowed, name-only check).")) return;
+  const r = await fetch("/api/demo/load", {method:"POST"}); const j = await r.json().catch(()=>({}));
+  if(!r.ok){ alert("Load demo failed: " + JSON.stringify(j.detail || j)); return; }
+  location.href = "/ui/index.html#s7"; setTimeout(()=>location.reload(), 50); }
 </script>
 </body>
 </html>

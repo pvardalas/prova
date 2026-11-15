@@ -24,6 +24,16 @@ PROVA_FAKE=1 ./run.sh                   # offline: no network, no cost, full pro
 
 Open http://127.0.0.1:8770.
 
+## Ready demo (no waiting)
+
+Press **Load demo** in the top menu of any page. It loads a finished run for a fictional Greek insurance office
+(Ασφαλιστικό Γραφείο Κωνσταντίνου: 68 customers, 70 calls, safety test, learned playbook) from `demo/demo.db` into the
+current server, and every step of the UI is usable right away. In demo mode a call can always be started: calling
+hours, attempt limits, the gap between calls and the budget are off, and identity is confirmed by name only. Consent and
+"do not call" still apply. For phone calls, start with `PHONE_TUNNEL=1 ./run.sh`, open the phone link (QR on the
+Calls step) on a mobile, then press Call. The same setup flow with your own files works unchanged; the demo only skips
+the waiting. A demo video is in `demo/video/draft_v3.mp4`.
+
 ## The UI, step by step
 
 1. **Data**: pick a sample (`insurance`, `gym`) or upload a .csv/.xlsx. See the column mapping, fixes, rejected rows.

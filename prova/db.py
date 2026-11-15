@@ -401,6 +401,29 @@ def due_followups():
 
 # ---------------------------------------------------------------- init
 
+def demo_mode() -> bool:
+    """Demo databases (Load demo) relax scheduling limits so a call can always be started."""
+    try:
+        r = one("SELECT value FROM settings WHERE key='demo_mode'")
+        return bool(r) and str(r["value"]) == "1"
+    except Exception:  # noqa: BLE001
+        return False
+
+
+def load_demo(src) -> None:
+    """Replace this database with a finished demo run (sqlite backup API, safe while the server runs)."""
+    import sqlite3 as _sq
+    s = _sq.connect(f"file:{src}?mode=ro", uri=True)
+    d = connect()
+    try:
+        s.backup(d)
+    finally:
+        s.close()
+    q("INSERT INTO settings (key, value) VALUES ('demo_mode', '1') ON CONFLICT(key) DO UPDATE SET value='1'")
+    q("INSERT INTO settings (key, value) VALUES ('clock_offset_h', '0') ON CONFLICT(key) DO UPDATE SET value='0'")
+    d.close()
+
+
 def reset():
     """Wipe everything and start a fresh, empty company in 'draft'."""
     with connect() as c:

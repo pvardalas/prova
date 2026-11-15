@@ -343,7 +343,17 @@ async def run_customer(customer_id: int, mode: str = "live", via: str = "auto", 
 
 
 def _next_candidates(n: int) -> list[dict]:
-    return db.q("SELECT * FROM customer WHERE status='active' AND score IS NOT NULL ORDER BY score DESC, id LIMIT ?", (n,))
+    rows = db.q("SELECT * FROM customer WHERE status='active' AND score IS NOT NULL ORDER BY score DESC, id LIMIT ?", (n,))
+    if rows or not db.demo_mode():
+        return rows
+    # demo: anyone the rules let us dial (consent, do-not-call still apply), best score first
+    out = []
+    for c in db.q("SELECT * FROM customer ORDER BY score IS NULL, score DESC, id"):
+        if _mod("policy").may_dial(c, (db.company() or {}).get("goal_type") or "renew", "sim").get("allow"):
+            out.append(c)
+            if len(out) >= n:
+                break
+    return out
 
 
 async def run_campaign(n: int = 5, mode: str = "sim", parallel: int = 3, goal: str | None = None) -> list[dict]:
