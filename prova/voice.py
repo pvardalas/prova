@@ -978,12 +978,20 @@ async def tunnel_restart_route():
     return phone_status()
 
 
+def _owner_token(request) -> bool:
+    """The owner's PROVA_TOKEN (cookie from /login, bearer or header) opens the full desk over the tunnel."""
+    import hmac as _h
+    from prova.guard import auth as _a
+    t, g = _a.token(), _a._given(request)
+    return bool(t and g and _h.compare_digest(g, t))
+
+
 def mount(app):
     app.include_router(router)
 
     @app.middleware("http")
     async def tunnel_guard(request: Request, call_next):
-        if _from_tunnel(request) and not request.url.path.startswith(PUBLIC_PATHS):
+        if _from_tunnel(request) and not request.url.path.startswith(PUBLIC_PATHS + ("/login",)) and not _owner_token(request):
             return JSONResponse({"error": "not available over the public tunnel"}, status_code=403)
         return await call_next(request)
 

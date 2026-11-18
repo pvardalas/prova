@@ -15,7 +15,7 @@ from prova.guard import registry
 
 LOOPBACK = {"127.0.0.1", "::1", "localhost", "testclient"}
 LOOPBACK_HOSTS = {"127.0.0.1", "localhost", "::1", "[::1]", "testserver", "testclient"}
-PUBLIC_PREFIXES = ("/k/", "/join", "/inbox/", "/api/inbox/", "/c/", "/t/")   # customer / owner links carry their own token
+PUBLIC_PREFIXES = ("/k/", "/join", "/inbox/", "/api/inbox/", "/c/", "/t/", "/login")   # customer / owner links carry their own token
 _RANK = {s: i for i, s in enumerate(registry.SCOPES)}
 
 # (method, path regex) -> scope. First match wins. Anything mutating and not listed = owner only.

@@ -945,6 +945,19 @@ def owner_page():
     return FileResponse(UI / "owner.html", headers={"Cache-Control": "no-store"})
 
 
+@app.get("/login", include_in_schema=False)
+def login(request: Request, k: str = ""):
+    """Owner sign-in over a tunnel: /login?k=PROVA_TOKEN stores the token in a cookie and opens the dashboard."""
+    _limit(request, "login", 20)
+    owner_t = auth.token()
+    if not (k and owner_t and hmac.compare_digest(k, owner_t)):
+        return HTMLResponse("<p>Wrong or missing key.</p>", status_code=401)
+    r = Response(status_code=303, headers={"Location": "/", "Cache-Control": "no-store"})
+    r.set_cookie("prova_token", k, httponly=True, samesite="lax", secure=request.url.scheme == "https"
+                 or request.headers.get("x-forwarded-proto") == "https", max_age=7 * 86400)
+    return r
+
+
 @app.get("/t/{token}", include_in_schema=False)
 def turn_on_page(request: Request, token: str):
     """The owner's link. HTML for the browser; with Accept: application/json the same token returns what will be turned on."""
