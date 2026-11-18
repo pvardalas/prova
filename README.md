@@ -104,3 +104,9 @@ customer keeps the hash-chained event log so it stays verifiable; the erase resu
 
 `prova/` db, template, llm (frozen), policy, gateway, onboard, prompts, sim, evals, sidecar, voice, learn,
 flow, server, mcp_server. `samples/` demo businesses. `ui/` the web UI. `tests/` pytest (FAKE mode).
+
+## License
+
+Copyright (c) 2026 Panagiotis Vardalas. Released under the
+[PolyForm Noncommercial License 1.0.0](LICENSE.md): you may use, change and share Prova for any
+noncommercial purpose. Commercial use needs a separate license from the author; get in touch.

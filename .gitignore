@@ -17,3 +17,4 @@ demo/video/draft_v2.mp4
 !demo/demo.db
 demo/demo.db-shm
 demo/demo.db-wal
+.claude/
